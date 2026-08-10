@@ -1,4 +1,4 @@
-// Tests for middleware/adminAuth.ts — the shared-secret check guarding DELETE /api/jokes/:id.
+// Tests for middleware/adminAuth.ts, the shared-secret check guarding DELETE /api/jokes/:id.
 // No database or real HTTP server needed: we build minimal fake Express req/res/next
 // objects, which is enough to exercise the middleware's branching logic in isolation.
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";

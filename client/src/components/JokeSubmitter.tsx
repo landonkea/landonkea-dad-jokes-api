@@ -7,7 +7,7 @@ import { Toast } from "./Toast";
 
 // Define the props that JokeSubmitter accepts
 interface JokeSubmitterProps {
-  // A callback function the parent provides — called after a joke is successfully submitted
+  // A callback function the parent provides, called after a joke is successfully submitted
   onJokeSubmitted: () => void;
 }
 
@@ -23,7 +23,7 @@ const GROAN_LABELS: Record<number, string> = {
   7: "😫 eye roll + sigh",
   8: "💀 soul-leaving-the-body",
   9: "🫠 complete physical collapse",
-  10: "☠️ transcendent groan — your dad would weep",
+  10: "☠️ transcendent groan, your dad would weep",
 };
 
 // The JokeSubmitter component renders a form for users to submit their own dad jokes
@@ -58,7 +58,7 @@ export const JokeSubmitter: React.FC<JokeSubmitterProps> = ({ onJokeSubmitted })
         author: author.trim() || "Anonymous Dad", // Use entered name, or default if empty
       });
       // Store a success message to display below the form. The joke doesn't go
-      // live immediately — it lands in the moderation queue (see ModerationQueue)
+      // live immediately, it lands in the moderation queue (see ModerationQueue)
       // as "pending" until an admin approves it, so set expectations accordingly.
       setResult({
         success: true,
@@ -100,9 +100,9 @@ export const JokeSubmitter: React.FC<JokeSubmitterProps> = ({ onJokeSubmitted })
         don't sigh, it's not a dad joke.
       </p>
 
-      {/* The actual form element — onSubmit fires when the user clicks the submit button */}
+      {/* The actual form element, onSubmit fires when the user clicks the submit button */}
       <form onSubmit={handleSubmit} className="submitter-form">
-        {/* Setup field group — label + text input for the first part of the joke */}
+        {/* Setup field group, label + text input for the first part of the joke */}
         <div className="form-group">
           <label htmlFor="setup">Setup (The wind-up)</label>
           <input
@@ -115,7 +115,7 @@ export const JokeSubmitter: React.FC<JokeSubmitterProps> = ({ onJokeSubmitted })
             maxLength={500}
           />
         </div>
-        {/* Punchline field group — label + text input for the funny payoff line */}
+        {/* Punchline field group, label + text input for the funny payoff line */}
         <div className="form-group">
           <label htmlFor="punchline">Punchline (The groan inducer)</label>
           <input
@@ -166,7 +166,7 @@ export const JokeSubmitter: React.FC<JokeSubmitterProps> = ({ onJokeSubmitted })
           <label htmlFor="groan">
             Groan Level: {groanLevel}/10
             {/* Look up the funny label for the current groan level number */}
-            <span className="groan-preview"> — {GROAN_LABELS[groanLevel]}</span>
+            <span className="groan-preview">, {GROAN_LABELS[groanLevel]}</span>
           </label>
           <input
             id="groan"
@@ -178,7 +178,7 @@ export const JokeSubmitter: React.FC<JokeSubmitterProps> = ({ onJokeSubmitted })
             className="groan-slider"
           />
         </div>
-        {/* Submit button — disabled while submitting or if required fields are empty */}
+        {/* Submit button, disabled while submitting or if required fields are empty */}
         <button
           type="submit"
           className="btn btn-submit"

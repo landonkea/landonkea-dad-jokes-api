@@ -13,7 +13,7 @@ export interface PaginationParams {
 }
 
 // Express puts query params on req.query as string | string[] | ParsedQs | undefined.
-// We only ever care about the plain-string case here — anything else (arrays,
+// We only ever care about the plain-string case here, anything else (arrays,
 // nested objects) is treated the same as "not provided".
 type QueryValue = string | string[] | undefined | unknown;
 
@@ -37,7 +37,7 @@ export function parsePagination(query: {
   const page = parsePositiveInt(query.page) ?? 1;
 
   // offset defaults to what "page" implies, but an explicit ?offset= always wins
-  // — this satisfies both "give me page 3" and "give me results 47 onward" callers.
+  //, this satisfies both "give me page 3" and "give me results 47 onward" callers.
   const offsetFromPage = (page - 1) * limit;
   let offset = offsetFromPage;
   if (typeof query.offset === "string") {

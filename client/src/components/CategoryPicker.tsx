@@ -9,7 +9,7 @@ interface CategoryPickerProps {
   onChange: (category: string | undefined) => void;  // A callback function to tell the parent when the user picks a category
 }
 
-// The CategoryPicker component renders a row of filter buttons — one for "All" and one per category.
+// The CategoryPicker component renders a row of filter buttons, one for "All" and one per category.
 export const CategoryPicker: React.FC<CategoryPickerProps> = ({
   selected,  // Which category is currently active
   onChange,   // Function to call when the user clicks a category button

@@ -6,24 +6,24 @@ const API_BASE = "/api";
 // This is like a contract that says "every Joke must have these fields with these types."
 export interface Joke {
   id: number;           // A unique number that identifies this joke in the database
-  setup: string;        // The first part of the joke — the setup line that builds anticipation
-  punchline: string;    // The second part — the funny payoff line
+  setup: string;        // The first part of the joke, the setup line that builds anticipation
+  punchline: string;    // The second part, the funny payoff line
   category: string;     // What kind of joke this is (e.g., "puns", "animals", "classic")
   groan_level: number;  // A rating from 1-10 of how groan-worthy the joke is
   upvotes: number;      // How many times people have voted this joke up
   downvotes: number;    // How many times people have voted this joke down
   created_at: string;   // The date/time the joke was submitted, as a string
   author: string;       // The name (or alias) of who submitted the joke
-  status: "pending" | "approved" | "rejected"; // Moderation state — only "approved" jokes are publicly visible
+  status: "pending" | "approved" | "rejected"; // Moderation state, only "approved" jokes are publicly visible
 }
 
 // Define a generic wrapper for all API responses. The API always sends back success, data, and sometimes error.
-// The <T> means this interface can hold any data type — we specify the type when we use it.
+// The <T> means this interface can hold any data type, we specify the type when we use it.
 export interface ApiResponse<T> {
   success: boolean;  // Whether the request succeeded (true) or failed (false)
   data?: T;          // The actual response data (only present if success is true). The "?" means it's optional.
   error?: string;    // An error message (only present if success is false). The "?" means it's optional.
-  // Pagination metadata — only present on list endpoints (like GET /api/jokes) that
+  // Pagination metadata, only present on list endpoints (like GET /api/jokes) that
   // support page/limit/offset query params.
   pagination?: {
     page: number;
@@ -55,7 +55,7 @@ export async function fetchRandomJoke(): Promise<Joke> {
 }
 
 // Fetch multiple jokes with optional filters for category, sort order, and how many to return.
-// The params object is optional — you can call fetchJokes() with no arguments to get all jokes.
+// The params object is optional, you can call fetchJokes() with no arguments to get all jokes.
 export async function fetchJokes(params?: {
   category?: string;  // Optional: only return jokes in this category
   sort?: string;      // Optional: how to order the results (e.g., "groan", "oldest")
@@ -81,7 +81,7 @@ export async function fetchJokes(params?: {
 
 // Fetch a single PAGE of jokes, along with pagination metadata (total count, total pages).
 // Use this instead of fetchJokes() when you need to render pager controls (Prev/Next, "page
-// X of Y") — the plain fetchJokes() above discards the pagination info the server sends back.
+// X of Y"), the plain fetchJokes() above discards the pagination info the server sends back.
 export async function fetchJokesPage(params?: {
   category?: string;  // Optional: only return jokes in this category
   sort?: string;      // Optional: how to order the results (e.g., "groan", "oldest")
@@ -156,7 +156,7 @@ export async function submitJoke(joke: {
   return json.data;
 }
 
-// Fetch overall statistics about the joke database — total jokes, votes, averages, and category breakdowns.
+// Fetch overall statistics about the joke database, total jokes, votes, averages, and category breakdowns.
 export async function fetchStats(): Promise<{
   total_jokes: number;                              // How many jokes exist in the database
   total_votes: number;                              // How many total votes have been cast
@@ -183,7 +183,7 @@ export async function fetchStats(): Promise<{
 }
 
 // ============================================================
-// Moderation queue — admin-only endpoints (require an x-admin-token header)
+// Moderation queue, admin-only endpoints (require an x-admin-token header)
 // ============================================================
 
 // The shape returned by fetchPendingJokes(): the pending jokes for the requested
@@ -193,7 +193,7 @@ export interface PendingJokesPage {
   pagination: NonNullable<ApiResponse<Joke[]>["pagination"]>;
 }
 
-// Fetch a page of jokes awaiting moderation. Requires a valid admin token — the
+// Fetch a page of jokes awaiting moderation. Requires a valid admin token, the
 // server rejects this with 401 (or 503 if ADMIN_TOKEN isn't configured server-side)
 // otherwise.
 export async function fetchPendingJokes(adminToken: string, page = 1, limit = 20): Promise<PendingJokesPage> {

@@ -35,7 +35,7 @@ export const SCHEMA_SQL = `
   -- 'pending' (see routes/jokes.ts POST /) and only become publicly visible once
   -- an admin approves them. Defaulting the COLUMN itself to 'approved' (rather than
   -- 'pending') means this ALTER is safe to run against a database that already has
-  -- jokes in it — every pre-existing row (including seed data) is grandfathered in
+  -- jokes in it, every pre-existing row (including seed data) is grandfathered in
   -- as already-approved instead of silently disappearing from the public API.
   ALTER TABLE jokes ADD COLUMN IF NOT EXISTS status VARCHAR(10) NOT NULL DEFAULT 'approved'
     CHECK (status IN ('pending', 'approved', 'rejected'));

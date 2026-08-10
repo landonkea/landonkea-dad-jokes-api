@@ -5,13 +5,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { fetchPendingJokes, approveJoke, rejectJoke, Joke, PendingJokesPage } from "../hooks/useJokes";
 
 // The localStorage key the admin token is cached under, so a moderator doesn't have
-// to retype it every time they reload the page. This is convenience, not security —
+// to retype it every time they reload the page. This is convenience, not security,
 // the actual gate is the server checking x-admin-token on every request.
 const ADMIN_TOKEN_STORAGE_KEY = "dadJokesAdminToken";
 
 // The ModerationQueue component is an admin-only panel: it takes an admin token,
 // lists jokes awaiting moderation, and lets the admin approve or reject each one.
-// There's no separate "login" concept — the token itself IS the credential, the
+// There's no separate "login" concept, the token itself IS the credential, the
 // same shared-secret model the existing DELETE /:id admin gate already uses.
 export const ModerationQueue: React.FC = () => {
   // The admin token as currently typed into the input (controlled field value).
@@ -19,7 +19,7 @@ export const ModerationQueue: React.FC = () => {
   const [token, setToken] = useState(() => localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY) || "");
   // The token actually used for fetching. Deliberately separate from "token" above:
   // it only updates when the form is submitted, so typing/editing the field doesn't
-  // fire a request on every keystroke — the queue only (re)loads on an explicit
+  // fire a request on every keystroke, the queue only (re)loads on an explicit
   // "Load Queue" submit or a page change.
   const [activeToken, setActiveToken] = useState(() => localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY) || "");
   // The jokes currently in the moderation queue for the current page.
@@ -41,7 +41,7 @@ export const ModerationQueue: React.FC = () => {
   // change, keeping the useEffect below from re-fetching on every render.
   const loadQueue = useCallback(async () => {
     if (!activeToken.trim()) {
-      // No token submitted yet — nothing to fetch, and no error to show either.
+      // No token submitted yet, nothing to fetch, and no error to show either.
       setJokes([]);
       setPagination(null);
       return;
@@ -61,7 +61,7 @@ export const ModerationQueue: React.FC = () => {
     }
   }, [activeToken, page]);
 
-  // Re-fetch whenever the active token or page changes — NOT on every keystroke in
+  // Re-fetch whenever the active token or page changes, NOT on every keystroke in
   // the input, since that's tracked separately by "token" above.
   useEffect(() => {
     loadQueue();
@@ -78,7 +78,7 @@ export const ModerationQueue: React.FC = () => {
     setActiveToken(trimmed);
   };
 
-  // Shared handler for both approve and reject — takes the action function so we
+  // Shared handler for both approve and reject, takes the action function so we
   // don't duplicate the loading/error/optimistic-removal logic twice.
   const handleAction = async (id: number, action: (id: number, token: string) => Promise<Joke>) => {
     setActingOnId(id);
@@ -86,7 +86,7 @@ export const ModerationQueue: React.FC = () => {
     try {
       await action(id, activeToken.trim());
       // Remove the joke from the local list immediately rather than waiting on a
-      // full re-fetch — it's no longer pending, so it shouldn't be in this queue.
+      // full re-fetch, it's no longer pending, so it shouldn't be in this queue.
       setJokes((prev) => prev.filter((j) => j.id !== id));
       setPagination((prev) => (prev ? { ...prev, total: Math.max(prev.total - 1, 0) } : prev));
     } catch (err) {
@@ -104,7 +104,7 @@ export const ModerationQueue: React.FC = () => {
         reject the rest before they hit the public list.
       </p>
 
-      {/* Admin token entry — same shared-secret model as the existing delete gate. */}
+      {/* Admin token entry, same shared-secret model as the existing delete gate. */}
       <form onSubmit={handleTokenSubmit} className="moderation-token-form">
         <div className="form-group">
           <label htmlFor="admin-token">Admin Token</label>
@@ -146,7 +146,7 @@ export const ModerationQueue: React.FC = () => {
                 <div className="joke-list-meta">
                   <span className="joke-list-category">{joke.category}</span>
                   <span className="joke-list-groan">Groan: {joke.groan_level}/10</span>
-                  <span className="joke-list-author">— {joke.author}</span>
+                  <span className="joke-list-author">,{joke.author}</span>
                 </div>
                 <div className="moderation-actions">
                   <button

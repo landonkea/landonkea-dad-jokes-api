@@ -6,7 +6,7 @@ import { Pool } from "pg";
 import { config } from "../config/env";
 
 // Create a new connection pool with our database credentials.
-// A pool manages multiple connections behind the scenes — you just call pool.query()
+// A pool manages multiple connections behind the scenes, you just call pool.query()
 // and the pool handles borrowing and returning connections automatically.
 const pool = new Pool({
   // The PostgreSQL username to authenticate with.
@@ -16,8 +16,8 @@ const pool = new Pool({
   // The database host (server address), e.g. "localhost" locally or "db"
   // inside docker-compose, where it resolves to the postgres service via
   // Docker's internal DNS. Without this, "pg" defaults to "localhost",
-  // which inside a container refers to the container itself — not the
-  // separate "db" service — so the connection would fail.
+  // which inside a container refers to the container itself, not the
+  // separate "db" service, so the connection would fail.
   host: config.dbHost,
   // The port PostgreSQL is listening on (defaults to 5432).
   port: config.dbPort,

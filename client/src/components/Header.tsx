@@ -4,7 +4,7 @@ import React from "react";
 // Define the Header component as a React Functional Component.
 // It takes no props (empty parentheses) because it only displays static content.
 export const Header: React.FC = () => {
-  // Return JSX — this is what the component renders to the screen.
+  // Return JSX, this is what the component renders to the screen.
   return (
     <header className="header">
       <div className="header-content">

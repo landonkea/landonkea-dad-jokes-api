@@ -1,4 +1,4 @@
-// Import defineConfig from vitest/config — same helper pattern as vite.config.ts, but for test settings
+// Import defineConfig from vitest/config, same helper pattern as vite.config.ts, but for test settings
 import { defineConfig } from 'vitest/config';
 // Import the React plugin so Vitest can understand JSX syntax in our test files
 import react from '@vitejs/plugin-react';
@@ -14,7 +14,7 @@ export default defineConfig({
     // environment: "jsdom" simulates a real browser DOM (document, window, etc.) inside Node.js
     // This is needed because React components render to the DOM, and jsdom provides that
     environment: 'jsdom',
-    // setupFiles runs this file before every test suite — it imports custom matchers like toBeInTheDocument
+    // setupFiles runs this file before every test suite, it imports custom matchers like toBeInTheDocument
     setupFiles: './src/test/setup.ts',
     // css: true tells Vitest to process CSS imports instead of ignoring them (prevents errors)
     css: true,

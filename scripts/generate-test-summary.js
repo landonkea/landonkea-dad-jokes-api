@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // =============================================================================
-// generate-test-summary.js — Runs both test suites, writes a persisted summary
+// generate-test-summary.js, Runs both test suites, writes a persisted summary
 // =============================================================================
 // WHAT: Runs "vitest run" for both server/ and client/ with the JSON reporter,
 //       then combines the pass/fail counts from both into a single summary
@@ -13,7 +13,7 @@
 // HOW:  Shells out to "npx vitest run --reporter=json --outputFile=..." in
 //       each package, parses the resulting JSON report, and aggregates it.
 //       Exits non-zero if either suite failed, so this can also be used as a
-//       CI gate on its own if desired (not required — CI already runs the
+//       CI gate on its own if desired (not required, CI already runs the
 //       suites separately as its primary gate; this script does not replace
 //       those steps).
 // =============================================================================
@@ -40,7 +40,7 @@ function runSuite(name, cwd) {
       { cwd, stdio: "inherit", env: process.env }
     );
   } catch (err) {
-    // Non-zero exit just means "some tests failed" — the JSON report is still
+    // Non-zero exit just means "some tests failed", the JSON report is still
     // written. We only treat this as a hard failure below if we can't read it.
     ranSuccessfully = false;
   }

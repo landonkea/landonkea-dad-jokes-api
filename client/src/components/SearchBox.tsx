@@ -9,7 +9,7 @@ interface SearchBoxProps {
 
 // SearchBox renders a text input + submit button for searching jokes by setup/punchline text.
 // It's a controlled "submit on Enter/click" search rather than search-as-you-type, so we don't
-// fire a request on every keystroke — the parent only re-fetches once the user is done typing.
+// fire a request on every keystroke, the parent only re-fetches once the user is done typing.
 export const SearchBox: React.FC<SearchBoxProps> = ({ value, onChange }) => {
   // draft holds what's currently typed in the box, which may differ from the "committed"
   // search term (value) until the user presses Enter or clicks the search button.

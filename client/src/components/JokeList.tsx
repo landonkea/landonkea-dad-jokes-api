@@ -8,9 +8,9 @@ import { getVoteFor, markVoted } from "../utils/votedJokes";
 
 // Define the props (inputs) that JokeList accepts. Both are optional filters.
 interface JokeListProps {
-  category?: string;  // Optional category filter — if set, only show jokes in this category
-  sort?: string;      // Optional sort order — if set, sort jokes by this criteria
-  q?: string;          // Optional search term — if set, only show jokes matching setup/punchline
+  category?: string;  // Optional category filter, if set, only show jokes in this category
+  sort?: string;      // Optional sort order, if set, sort jokes by this criteria
+  q?: string;          // Optional search term, if set, only show jokes matching setup/punchline
 }
 
 // The JokeList component displays a scrollable list of jokes that can be filtered and sorted.
@@ -33,7 +33,7 @@ export const JokeList: React.FC<JokeListProps> = ({ category, sort, q }) => {
   // on (and how). Seeded from localStorage so it survives page reloads, not just re-renders.
   const [votedIds, setVotedIds] = useState<Record<number, "up" | "down">>({});
 
-  // Whenever the category, sort, or search filter changes, jump back to page 1 — staying
+  // Whenever the category, sort, or search filter changes, jump back to page 1, staying
   // on, say, page 3 of a filter that now has only 1 page of results would show an empty list.
   useEffect(() => {
     setPage(1);
@@ -54,7 +54,7 @@ export const JokeList: React.FC<JokeListProps> = ({ category, sort, q }) => {
         if (!cancelled) {
           setJokes(data);       // Store the fetched jokes
           setPagination(meta);  // Store the pagination metadata (total, total_pages, ...)
-          // Seed this page's "already voted" state from localStorage — the buttons should
+          // Seed this page's "already voted" state from localStorage, the buttons should
           // come in already-disabled for jokes voted on in a previous visit.
           const seeded: Record<number, "up" | "down"> = {};
           for (const joke of data) {
@@ -135,7 +135,7 @@ export const JokeList: React.FC<JokeListProps> = ({ category, sort, q }) => {
       {/* Loop through each joke and render a clickable accordion item */}
       {jokes.map((joke) => (
         <div key={joke.id} className="joke-list-item">
-          {/* The header row — clicking it toggles the punchline open/closed */}
+          {/* The header row, clicking it toggles the punchline open/closed */}
           <div className="joke-list-item-header" onClick={() => setExpandedId(expandedId === joke.id ? null : joke.id)}>
             <span className="joke-list-setup">{joke.setup}</span>
             {/* Arrow indicator: ▼ when expanded, ▶ when collapsed */}
@@ -164,13 +164,13 @@ export const JokeList: React.FC<JokeListProps> = ({ category, sort, q }) => {
                     👎 {joke.downvotes}
                   </button>
                 </div>
-                <span className="joke-list-author">— {joke.author}</span>
+                <span className="joke-list-author">,{joke.author}</span>
               </div>
             </div>
           )}
         </div>
       ))}
-      {/* Pager controls — only shown once we know how many pages there are, and hidden
+      {/* Pager controls, only shown once we know how many pages there are, and hidden
           entirely when everything fits on a single page. */}
       {pagination && pagination.total_pages > 1 && (
         <div className="joke-list-pager">

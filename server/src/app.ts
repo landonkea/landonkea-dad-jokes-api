@@ -1,6 +1,6 @@
 // Builds and exports the configured Express app, WITHOUT starting it listening on a port.
 // Split out of index.ts so integration tests (see __tests__/*.integration.test.ts) can import
-// the exact same app — middleware, routers, error handler and all — via supertest, instead of
+// the exact same app, middleware, routers, error handler and all, via supertest, instead of
 // re-declaring a partial copy that could drift from what actually runs in production.
 import express from "express";
 import cors from "cors";
@@ -39,7 +39,7 @@ app.get("/api/health", (_req, res) => {
 // Serve the built React client (client/dist), if present. In the production Docker image
 // this directory is copied in alongside the compiled server (see Dockerfile) so one process
 // serves both the API and the static frontend. In local dev the client normally runs via
-// its own Vite dev server instead, so client/dist may not exist — in that case we simply
+// its own Vite dev server instead, so client/dist may not exist, in that case we simply
 // skip static serving rather than crashing.
 const clientDistPath = path.join(__dirname, "../../client/dist");
 if (fs.existsSync(clientDistPath)) {
@@ -58,7 +58,7 @@ if (fs.existsSync(clientDistPath)) {
   });
 }
 
-// Catch-all error handler — must be registered last.
+// Catch-all error handler, must be registered last.
 app.use(errorHandler);
 
 export default app;

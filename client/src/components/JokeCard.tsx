@@ -20,13 +20,13 @@ import { JokeCardSkeleton } from "./Skeleton";
 // Each bucket has a minimum groan level and an array of funny reaction strings to randomly pick from.
 // Higher groan levels get more dramatic reactions.
 const REACTIONS = [
-  // Groan level 9-10: extreme reactions — the joke was so bad it "ended" them
+  // Groan level 9-10: extreme reactions, the joke was so bad it "ended" them
   { min: 9, texts: ["💀 That joke just ended me.", "🫠 I'm liquefied from that groan.", "⚰️ Call a priest, that joke was demonic."] },
-  // Groan level 7-8: strong reactions — neighbors heard the groan
+  // Groan level 7-8: strong reactions, neighbors heard the groan
   { min: 7, texts: ["😤 My neighbors heard that groan.", "🙄 I rolled my eyes so hard they did a 360.", "🫡 Respect. That was painfully good."] },
-  // Groan level 5-6: moderate reactions — respectable groans
+  // Groan level 5-6: moderate reactions, respectable groans
   { min: 5, texts: ["😐 A solid 'dad nod' of approval.", "😤 A respectable groan. Father would be proud.", "🫢 I smiled. Don't tell anyone."] },
-  // Groan level 0-4: mild reactions — surprisingly funny or barely a chuckle
+  // Groan level 0-4: mild reactions, surprisingly funny or barely a chuckle
   { min: 0, texts: ["😂 Wait... that was actually funny?", "🤨 Are you sure you're a dad?", "✨ A rare gem in a sea of groans."] },
 ];
 
@@ -60,7 +60,7 @@ export const JokeCard: React.FC = () => {
   const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
 
   // Whenever a (possibly new) random joke loads, check whether this browser already
-  // voted on it before (it's a small joke pool — /random can easily repeat one you've
+  // voted on it before (it's a small joke pool, /random can easily repeat one you've
   // seen). If so, restore the disabled/voted button state instead of letting the user
   // vote again.
   useEffect(() => {
@@ -140,7 +140,7 @@ export const JokeCard: React.FC = () => {
       <div className="joke-card joke-error">
         <p>😱 {error}</p>
         <p className="joke-error-sub">
-          The joke server is probably on a dad break. You know how they are — 30
+          The joke server is probably on a dad break. You know how they are, 30
           minutes in the garage and suddenly they've invented a new tool.
         </p>
         <button onClick={handleNewJoke} className="btn btn-primary">
@@ -153,12 +153,12 @@ export const JokeCard: React.FC = () => {
   // If somehow there's no joke and no error and no loading, render nothing
   if (!joke) return null;
 
-  // Main joke card rendering — shown when we have a loaded joke with no errors
+  // Main joke card rendering, shown when we have a loaded joke with no errors
   return (
     <div className="joke-card" key={joke.id}>
-      {/* Confetti overlay — only visible when confettiTrigger is true */}
+      {/* Confetti overlay, only visible when confettiTrigger is true */}
       <Confetti trigger={confettiTrigger} onComplete={() => setConfettiTrigger(false)} />
-      {/* Toast notification popup — only visible when toastVisible is true */}
+      {/* Toast notification popup, only visible when toastVisible is true */}
       <Toast message={toastMsg} type={toastType} visible={toastVisible} />
       {/* Badge showing which category this joke belongs to */}
       <div className="joke-category-badge">{joke.category}</div>
@@ -192,7 +192,7 @@ export const JokeCard: React.FC = () => {
       {/* Footer row with vote buttons and author attribution */}
       <div className="joke-footer">
         <div className="joke-votes">
-          {/* Upvote button — adds 1 locally if user voted up, disabled after voting */}
+          {/* Upvote button, adds 1 locally if user voted up, disabled after voting */}
           <button
             className={`vote-btn upvote ${voted === "up" ? "voted" : ""}`}
             onClick={() => handleVote("up")}
@@ -200,7 +200,7 @@ export const JokeCard: React.FC = () => {
           >
             👍 {joke.upvotes + (voted === "up" ? 1 : 0)}
           </button>
-          {/* Downvote button — adds 1 locally if user voted down, disabled after voting */}
+          {/* Downvote button, adds 1 locally if user voted down, disabled after voting */}
           <button
             className={`vote-btn downvote ${voted === "down" ? "voted" : ""}`}
             onClick={() => handleVote("down")}
@@ -210,7 +210,7 @@ export const JokeCard: React.FC = () => {
           </button>
         </div>
         {/* Author name shown at the right side of the footer */}
-        <span className="joke-author">— {joke.author}</span>
+        <span className="joke-author">,{joke.author}</span>
       </div>
       {/* Button to load the next random joke */}
       <button onClick={handleNewJoke} className="btn btn-secondary">

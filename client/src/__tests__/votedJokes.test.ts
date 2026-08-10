@@ -1,4 +1,4 @@
-// Tests for utils/votedJokes.ts — the localStorage-backed "already voted" tracker used
+// Tests for utils/votedJokes.ts, the localStorage-backed "already voted" tracker used
 // by both JokeCard and JokeList to prevent voting twice on the same joke, including
 // across page reloads. The client/src/test/setup.ts file provides a working localStorage
 // mock for jsdom, so these run without any DOM rendering.
@@ -7,7 +7,7 @@ import { getVoteFor, hasVoted, markVoted } from "../utils/votedJokes";
 
 describe("votedJokes", () => {
   beforeEach(() => {
-    // Each test should start from a clean slate — clear whatever the mock localStorage held.
+    // Each test should start from a clean slate, clear whatever the mock localStorage held.
     window.localStorage.clear();
   });
 
@@ -38,7 +38,7 @@ describe("votedJokes", () => {
   it("persists across separate calls (simulating a page reload)", () => {
     markVoted(99, "up");
     // A fresh call sequence, as if the page had reloaded and re-imported the module state
-    // fresh — since votedJokes.ts reads from localStorage on every call rather than caching
+    // fresh, since votedJokes.ts reads from localStorage on every call rather than caching
     // in memory, this naturally verifies reload-durability.
     expect(getVoteFor(99)).toBe("up");
   });

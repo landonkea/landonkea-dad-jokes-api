@@ -6,9 +6,9 @@ import { render, screen } from '@testing-library/react';
 // Import the App component we're testing
 import App from '../App';
 
-// "describe" groups related tests together — this block is for all App tests
+// "describe" groups related tests together, this block is for all App tests
 describe('App', () => {
-  // "it" defines a single test case — this one checks that the app title renders
+  // "it" defines a single test case, this one checks that the app title renders
   it('renders the app title', () => {
     // Render the App component into the fake DOM provided by jsdom
     render(<App />);

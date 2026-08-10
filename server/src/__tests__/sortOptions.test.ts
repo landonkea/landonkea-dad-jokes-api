@@ -1,4 +1,4 @@
-// Tests for utils/sortOptions.ts — the pure helper that turns a "sort" query param
+// Tests for utils/sortOptions.ts, the pure helper that turns a "sort" query param
 // into a SQL ORDER BY clause. No database needed; we're just checking the generated
 // SQL fragment, plus (separately) the underlying "controversial" scoring math.
 import { describe, it, expect } from "vitest";

@@ -1,6 +1,6 @@
 // Vitest setup file, run once before the test suite executes.
 //
-// config/env.ts calls process.exit(1) at import time if DB_USER or DB_NAME are missing —
+// config/env.ts calls process.exit(1) at import time if DB_USER or DB_NAME are missing,
 // that's the right behavior for the real server (fail fast on misconfiguration), but it's
 // hostile to unit tests that import something which transitively pulls in config/env.ts
 // (e.g. middleware/adminAuth.ts) without needing a real database at all.

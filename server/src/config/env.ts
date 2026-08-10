@@ -1,5 +1,5 @@
 // This file validates that all required environment variables are set before the app starts.
-// It "fails fast" — meaning if something is misconfigured, we find out immediately
+// It "fails fast", meaning if something is misconfigured, we find out immediately
 // instead of discovering it later with a mysterious crash.
 
 // "required" is an array of environment variable names that MUST exist.
@@ -7,7 +7,7 @@
 // If DB_USER or DB_NAME is missing from the .env file, the server won't start at all.
 const required = ["DB_USER", "DB_NAME"] as const;
 
-// Loop through every required variable name using "for...of" — this goes through the list one by one.
+// Loop through every required variable name using "for...of", this goes through the list one by one.
 // "key" is the current variable name we're checking (first "DB_USER", then "DB_NAME").
 for (const key of required) {
   // Check if this environment variable is missing or empty.
@@ -25,15 +25,15 @@ for (const key of required) {
 }
 
 // Export a "config" object that other files can import to get all their configuration values.
-// This centralizes all environment variable access in one place — a good practice.
+// This centralizes all environment variable access in one place, a good practice.
 export const config = {
   // The PostgreSQL username. The "!" after process.env.DB_USER is a TypeScript "non-null assertion."
-  // It tells TypeScript "I promise this value exists" — which is safe because we checked above.
+  // It tells TypeScript "I promise this value exists", which is safe because we checked above.
   dbUser: process.env.DB_USER!,
   // The PostgreSQL database name. Same non-null assertion applies here.
   dbName: process.env.DB_NAME!,
   // The database host (server address). Uses "||" to fall back to "localhost" if not set.
-  // This means in development you don't need to set DB_HOST — it defaults to your own machine.
+  // This means in development you don't need to set DB_HOST, it defaults to your own machine.
   dbHost: process.env.DB_HOST || "localhost",
   // The database port. "parseInt" converts the string "5432" into the number 5432.
   // Falls back to 5432 (PostgreSQL's default port) if not specified.
@@ -48,8 +48,8 @@ export const config = {
   // 3001 is a common choice for backend servers (3000 is often used for frontend dev servers).
   port: parseInt(process.env.PORT || "3001"),
   // The shared-secret token required to perform admin-only actions (like deleting a joke).
-  // Not in "required" above — if it's left unset, admin routes fail closed (see adminAuth
+  // Not in "required" above, if it's left unset, admin routes fail closed (see adminAuth
   // middleware) rather than crashing the whole server on startup.
   adminToken: process.env.ADMIN_TOKEN || undefined,
-// "as const" makes all properties readonly — you can't accidentally change them later.
+// "as const" makes all properties readonly, you can't accidentally change them later.
 } as const;

@@ -1,4 +1,4 @@
-// Tests for utils/pagination.ts — the pure helper that turns page/limit/offset query
+// Tests for utils/pagination.ts, the pure helper that turns page/limit/offset query
 // params into a safe, bounded { limit, offset, page } triple. No database needed.
 import { describe, it, expect } from "vitest";
 import { parsePagination, DEFAULT_LIMIT, MAX_LIMIT } from "../utils/pagination";
@@ -36,7 +36,7 @@ describe("parsePagination", () => {
   it("lets an explicit offset override the page-derived offset", () => {
     const result = parsePagination({ page: "2", limit: "10", offset: "47" });
     expect(result.offset).toBe(47);
-    // page/limit are still reported as given — only the derived offset is overridden.
+    // page/limit are still reported as given, only the derived offset is overridden.
     expect(result.page).toBe(2);
     expect(result.limit).toBe(10);
   });

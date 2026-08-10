@@ -9,7 +9,7 @@ import pool from "../db/pool";
 import { JokeInput, ApiResponse, Joke } from "../types";
 // Import the vote-specific rate limiter (stricter than the general API limiter).
 import { voteLimiter } from "../middleware/rateLimiter";
-// Import our Zod validation schemas — these check that incoming data is valid before we use it.
+// Import our Zod validation schemas, these check that incoming data is valid before we use it.
 import { jokeInputSchema, voteInputSchema } from "../validation/jokeSchema";
 // Import the pure "sort" query param -> SQL ORDER BY clause helper (unit-tested separately).
 import { getSortClause } from "../utils/sortOptions";
@@ -23,10 +23,10 @@ import { requireAdminToken } from "../middleware/adminAuth";
 const router = Router();
 
 // ============================================================
-// GET / — Get all jokes (with optional filters and sorting)
+// GET /, Get all jokes (with optional filters and sorting)
 // ============================================================
 // This route handles GET requests to "/api/jokes" (the base path).
-// GET means "give me data" — we're not creating or changing anything, just reading.
+// GET means "give me data", we're not creating or changing anything, just reading.
 // The "/" here means the root path of this router.
 // "async" lets us use "await" inside to wait for the database query to finish.
 router.get("/", async (_req: Request, res: Response): Promise<void> => {
@@ -43,7 +43,7 @@ router.get("/", async (_req: Request, res: Response): Promise<void> => {
     // These params are shared between the SELECT and the COUNT query below, since
     // both need the exact same WHERE clause to stay consistent.
     const filterParams: unknown[] = [];
-    // Public listing only ever shows approved jokes — pending submissions are still
+    // Public listing only ever shows approved jokes, pending submissions are still
     // awaiting moderation, and rejected ones were turned down. Both are only visible
     // through the admin-gated moderation endpoints below.
     let whereClause = " WHERE status = 'approved'";
@@ -65,10 +65,10 @@ router.get("/", async (_req: Request, res: Response): Promise<void> => {
     //      so "widget" still matches a joke that only contains "gadget widgets") and
     //      trigram similarity() above a low threshold (so a typo like "wigdet" still matches).
     //   2. relevanceOrder is set so the SELECT below sorts best-match-first instead of the
-    //      usual score/groan/date ordering — when you're searching, "closest match" is a
+    //      usual score/groan/date ordering, when you're searching, "closest match" is a
     //      more useful order than "most upvoted".
     // Scoped to the same "status = 'approved'" WHERE clause as everything else in this
-    // route — search must never surface pending/rejected submissions.
+    // route, search must never surface pending/rejected submissions.
     let relevanceOrder: string | null = null;
     if (typeof q === "string" && q.trim() !== "") {
       const searchTerm = q.trim();
@@ -79,9 +79,9 @@ router.get("/", async (_req: Request, res: Response): Promise<void> => {
     }
 
     // Determine how to sort the results based on the "sort" query parameter.
-    // Delegated to a pure helper (utils/sortOptions.ts) so the ordering logic — including
-    // the "controversial" scoring math — can be unit-tested without a database.
-    // A search (?q=) always takes ordering priority over ?sort= — "best match" is what
+    // Delegated to a pure helper (utils/sortOptions.ts) so the ordering logic, including
+    // the "controversial" scoring math, can be unit-tested without a database.
+    // A search (?q=) always takes ordering priority over ?sort=, "best match" is what
     // someone searching wants to see first, not "most upvoted" or "newest".
     const sortOption = relevanceOrder || getSortClause(typeof sort === "string" ? sort : undefined);
 
@@ -125,7 +125,7 @@ router.get("/", async (_req: Request, res: Response): Promise<void> => {
     };
 
     // Send the response back to the client as JSON.
-    // By default, this sends HTTP status 200 (OK — everything worked).
+    // By default, this sends HTTP status 200 (OK, everything worked).
     res.json(response);
 
   // If anything goes wrong (database error, etc.), the "catch" block runs.
@@ -144,20 +144,20 @@ router.get("/", async (_req: Request, res: Response): Promise<void> => {
 });
 
 // ============================================================
-// GET /random — Get one random joke
+// GET /random, Get one random joke
 // ============================================================
 // This route handles GET requests to "/api/jokes/random".
-// It picks one joke at random from the database — perfect for a "surprise me" button.
+// It picks one joke at random from the database, perfect for a "surprise me" button.
 router.get("/random", async (_req: Request, res: Response): Promise<void> => {
   try {
     // SQL query: "SELECT * FROM jokes" = get all columns from the jokes table.
     // "ORDER BY RANDOM()" shuffles all the rows randomly.
     // "LIMIT 1" takes only the first (randomly shuffled) row.
-    // So we get one random joke. Only approved jokes are eligible — a pending
+    // So we get one random joke. Only approved jokes are eligible, a pending
     // submission shouldn't be able to show up before a moderator has seen it.
     const result = await pool.query("SELECT * FROM jokes WHERE status = 'approved' ORDER BY RANDOM() LIMIT 1");
 
-    // If the result has 0 rows, the database is empty — there are no jokes to return.
+    // If the result has 0 rows, the database is empty, there are no jokes to return.
     if (result.rows.length === 0) {
       // Send a 404 (Not Found) response with a funny error message.
       // HTTP 404 means "the thing you asked for doesn't exist."
@@ -186,7 +186,7 @@ router.get("/random", async (_req: Request, res: Response): Promise<void> => {
 });
 
 // ============================================================
-// GET /categories — Get all categories with joke counts
+// GET /categories, Get all categories with joke counts
 // ============================================================
 // This route handles GET requests to "/api/jokes/categories".
 // It returns a list of categories and how many jokes are in each one.
@@ -219,7 +219,7 @@ router.get("/categories", async (_req: Request, res: Response): Promise<void> =>
 });
 
 // ============================================================
-// GET /stats — Get overall statistics about all jokes
+// GET /stats, Get overall statistics about all jokes
 // ============================================================
 // This route handles GET requests to "/api/jokes/stats".
 // It returns a dashboard-style summary of the entire joke collection.
@@ -230,7 +230,7 @@ router.get("/stats", async (_req: Request, res: Response): Promise<void> => {
     // "SUM(upvotes + downvotes)" = the total of all votes across all jokes combined.
     // "ROUND(AVG(groan_level), 1)" = the average groan level, rounded to 1 decimal place.
     // This is like asking "give me the big picture stats."
-    // Every aggregate below is scoped to status = 'approved' — pending/rejected
+    // Every aggregate below is scoped to status = 'approved', pending/rejected
     // submissions haven't cleared moderation, so they shouldn't skew public stats.
     const stats = await pool.query(`
       SELECT
@@ -292,18 +292,18 @@ router.get("/stats", async (_req: Request, res: Response): Promise<void> => {
 });
 
 // ============================================================
-// GET /pending — Get all jokes awaiting moderation (admin only)
+// GET /pending, Get all jokes awaiting moderation (admin only)
 // ============================================================
 // This route handles GET requests to "/api/jokes/pending".
 // It's how an admin reviews the moderation queue: every joke someone has submitted
 // that hasn't been approved or rejected yet, oldest first (so the queue is worked
 // in the order jokes came in, like a support ticket queue).
-// NOTE: This MUST be declared before GET "/:id" below — Express matches routes in
+// NOTE: This MUST be declared before GET "/:id" below, Express matches routes in
 // the order they're registered, and "/:id" would otherwise swallow "/pending" by
 // treating the literal word "pending" as an :id value.
 router.get("/pending", requireAdminToken, async (req: Request, res: Response): Promise<void> => {
   try {
-    // Reuse the same pagination helper as the public listing — the queue can grow
+    // Reuse the same pagination helper as the public listing, the queue can grow
     // large, so admins page through it rather than fetching everything at once.
     const { limit, offset, page } = parsePagination(req.query);
 
@@ -339,13 +339,13 @@ router.get("/pending", requireAdminToken, async (req: Request, res: Response): P
 });
 
 // ============================================================
-// GET /:id — Get a single joke by its ID number
+// GET /:id, Get a single joke by its ID number
 // ============================================================
 // This route handles GET requests to "/api/jokes/42" (or any number).
-// The ":id" part is a URL parameter — it captures whatever number is in the URL
+// The ":id" part is a URL parameter, it captures whatever number is in the URL
 // and makes it available as req.params.id.
 // Think of it like a form field: the URL is the form, and ":id" is the blank to fill in.
-// Only approved jokes are visible here — a pending or rejected joke isn't public yet,
+// Only approved jokes are visible here, a pending or rejected joke isn't public yet,
 // so it 404s just like an id that doesn't exist at all (this also means the queue
 // doesn't leak which ids are "real but not approved" to an unauthenticated caller).
 router.get("/:id", async (req: Request, res: Response): Promise<void> => {
@@ -382,7 +382,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
 });
 
 // ============================================================
-// POST / — Create a new joke
+// POST /, Create a new joke
 // ============================================================
 // This route handles POST requests to "/api/jokes".
 // POST means "I'm sending you data to create something new."
@@ -401,13 +401,13 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
         // "parsed.error.issues" is an array of error objects from Zod.
         error: parsed.error.issues.map((i) => i.message).join("; "),
       });
-      // Stop execution — don't try to insert invalid data.
+      // Stop execution, don't try to insert invalid data.
       return;
     }
     // Destructure the validated data into individual variables for easy use.
     const { setup, punchline, category, groan_level, author } = parsed.data;
 
-    // Insert the new joke into the database with status = 'pending' — public
+    // Insert the new joke into the database with status = 'pending', public
     // submissions go through moderation before they're visible to anyone else or
     // eligible for voting. An admin approves or rejects it via the /:id/approve
     // and /:id/reject routes below (see GET /pending for the review queue).
@@ -426,7 +426,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
       success: true,
       data: result.rows[0],
     };
-    // Send with HTTP status 201 (Created) — this is the correct status for successful resource creation.
+    // Send with HTTP status 201 (Created), this is the correct status for successful resource creation.
     res.status(201).json(response);
   } catch (err) {
     const response: ApiResponse<null> = {
@@ -438,7 +438,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 });
 
 // ============================================================
-// POST /vote — Upvote or downvote a joke
+// POST /vote, Upvote or downvote a joke
 // ============================================================
 // This route handles POST requests to "/api/jokes/vote".
 // The client sends which joke they're voting on and whether it's an upvote or downvote.
@@ -459,13 +459,13 @@ router.post("/vote", voteLimiter, async (req: Request, res: Response): Promise<v
     // Extract the validated joke_id and vote_type from the parsed data.
     const { joke_id, vote_type } = parsed.data;
 
-    // Identify the voter by IP address. This is the only identity signal we have —
-    // there's no login/account system — so it's an imperfect dedup (shared IPs/NAT
+    // Identify the voter by IP address. This is the only identity signal we have,
+    // there's no login/account system, so it's an imperfect dedup (shared IPs/NAT
     // can share a vote slot, VPNs can dodge it), but it stops the easy case of a
     // single browser mashing the vote button or refreshing to vote again.
     const voterIp = req.ip || req.socket.remoteAddress || "unknown";
 
-    // A joke has to have cleared moderation before it can be voted on — otherwise
+    // A joke has to have cleared moderation before it can be voted on, otherwise
     // someone could vote on (or find out about the existence of) a joke that's
     // still pending review, or one that was rejected. Treat both cases as 404,
     // same as an id that doesn't exist at all.
@@ -534,14 +534,14 @@ router.post("/vote", voteLimiter, async (req: Request, res: Response): Promise<v
 });
 
 // ============================================================
-// POST /:id/approve — Approve a pending joke (admin only)
+// POST /:id/approve, Approve a pending joke (admin only)
 // ============================================================
 // This route handles POST requests to "/api/jokes/42/approve".
 // Moves a joke from "pending" to "approved", making it visible in the public API
 // (GET /, /random, /categories, /stats, /:id) and eligible for voting.
 router.post("/:id/approve", requireAdminToken, async (req: Request, res: Response): Promise<void> => {
   try {
-    // Only actually transitions a joke that's currently "pending" — approving an
+    // Only actually transitions a joke that's currently "pending", approving an
     // already-approved or rejected joke is a no-op at the SQL level so we can tell
     // apart "doesn't exist" from "exists but wasn't pending" below.
     const result = await pool.query(
@@ -579,11 +579,11 @@ router.post("/:id/approve", requireAdminToken, async (req: Request, res: Respons
 });
 
 // ============================================================
-// POST /:id/reject — Reject a pending joke (admin only)
+// POST /:id/reject, Reject a pending joke (admin only)
 // ============================================================
 // This route handles POST requests to "/api/jokes/42/reject".
 // Moves a joke from "pending" to "rejected". The row is kept (not deleted) so
-// there's a record of what was submitted and turned down — an admin who wants it
+// there's a record of what was submitted and turned down, an admin who wants it
 // gone entirely can still DELETE /:id afterward.
 router.post("/:id/reject", requireAdminToken, async (req: Request, res: Response): Promise<void> => {
   try {
@@ -620,24 +620,24 @@ router.post("/:id/reject", requireAdminToken, async (req: Request, res: Response
 });
 
 // ============================================================
-// DELETE /:id — Delete a joke by its ID number
+// DELETE /:id, Delete a joke by its ID number
 // ============================================================
 // This route handles DELETE requests to "/api/jokes/42" (or any number).
 // DELETE means "remove this thing from existence."
-// "requireAdminToken" runs first — anyone without a valid x-admin-token header gets
+// "requireAdminToken" runs first, anyone without a valid x-admin-token header gets
 // rejected before this handler ever touches the database. Previously ANY visitor
 // could delete ANY joke with no auth check at all.
 router.delete("/:id", requireAdminToken, async (req: Request, res: Response): Promise<void> => {
   try {
     // Delete the joke from the database where the id matches.
     // "RETURNING *" sends back the deleted row so we can confirm what was removed.
-    // This is useful — the client might want to know what they just deleted.
+    // This is useful, the client might want to know what they just deleted.
     const result = await pool.query(
       "DELETE FROM jokes WHERE id = $1 RETURNING *",
       [req.params.id]
     );
 
-    // If result.rows is empty, no joke had that id — nothing was deleted.
+    // If result.rows is empty, no joke had that id, nothing was deleted.
     if (result.rows.length === 0) {
       res.status(404).json({ success: false, error: "Joke not found." });
       return;

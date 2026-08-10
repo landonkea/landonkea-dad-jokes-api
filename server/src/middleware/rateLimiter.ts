@@ -1,5 +1,5 @@
 // Import the rateLimit function from the "express-rate-limit" library.
-// Rate limiting is like a bouncer at a club — it limits how many requests each visitor can make.
+// Rate limiting is like a bouncer at a club, it limits how many requests each visitor can make.
 // This protects the server from being overwhelmed by too many requests (accidental or malicious).
 import rateLimit from "express-rate-limit";
 
@@ -32,7 +32,7 @@ export const apiLimiter = rateLimit({
 export const voteLimiter = rateLimit({
   // Same 15-minute time window as the general limiter.
   windowMs: 15 * 60 * 1000,
-  // Only 30 votes allowed per IP per 15 minutes — much stricter than the 100 general requests.
+  // Only 30 votes allowed per IP per 15 minutes, much stricter than the 100 general requests.
   max: 30,
   // A humorous error message that fits the dad joke theme.
   message: {

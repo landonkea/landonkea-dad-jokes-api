@@ -9,8 +9,8 @@ interface Props {
 
 // Define the internal state that ErrorBoundary tracks
 interface State {
-  hasError: boolean;      // Whether an error has been caught — starts false
-  error: Error | null;    // The actual Error object if one was caught — starts null
+  hasError: boolean;      // Whether an error has been caught, starts false
+  error: Error | null;    // The actual Error object if one was caught, starts null
 }
 
 // Catches JavaScript errors anywhere in the child component tree
@@ -20,7 +20,7 @@ export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     // Always call super(props) first in a class component constructor
     super(props);
-    // Initialize state with no error — nothing has gone wrong yet
+    // Initialize state with no error, nothing has gone wrong yet
     this.state = { hasError: false, error: null };
   }
 

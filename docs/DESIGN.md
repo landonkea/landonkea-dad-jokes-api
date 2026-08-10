@@ -1,4 +1,4 @@
-# landonkea-dad-jokes-api — Design & Workflow
+# landonkea-dad-jokes-api - Design & Workflow
 
 ## High-Level Overview
 

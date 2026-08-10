@@ -1,4 +1,4 @@
-// Import @testing-library/jest-dom — adds custom DOM matchers like toBeInTheDocument() and toHaveClass()
+// Import @testing-library/jest-dom, adds custom DOM matchers like toBeInTheDocument() and toHaveClass()
 // This file runs automatically before every test (configured in vitest.config.ts via setupFiles)
 import '@testing-library/jest-dom';
 

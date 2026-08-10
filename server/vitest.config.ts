@@ -13,7 +13,7 @@ export default defineConfig({
     // Explicitly exclude compiled output. Without this, a local "npm run build" (which
     // writes dist/__tests__/*.js right alongside dist/src) can leave stale CommonJS test
     // files that vitest picks up and fails to import ("Vitest cannot be imported in a
-    // CommonJS module using require()") — duplicating and breaking otherwise-passing
+    // CommonJS module using require()"), duplicating and breaking otherwise-passing
     // src/__tests__ runs. CI never hits this (fresh checkout, no dist/ yet), but local
     // dev after a build does.
     exclude: ["**/node_modules/**", "**/dist/**"],

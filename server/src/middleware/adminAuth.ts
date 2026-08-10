@@ -30,6 +30,6 @@ export function requireAdminToken(req: Request, res: Response, next: NextFunctio
     return;
   }
 
-  // Token matches — let the request proceed to the actual route handler.
+  // Token matches, let the request proceed to the actual route handler.
   next();
 }

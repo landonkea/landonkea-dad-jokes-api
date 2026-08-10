@@ -2,13 +2,13 @@
 import { Pool } from "pg";
 // Import our validated config object to get database credentials.
 import { config } from "../config/env";
-// Import the shared CREATE TABLE / CREATE INDEX SQL — also used by integration tests
+// Import the shared CREATE TABLE / CREATE INDEX SQL, also used by integration tests
 // so the test schema can never silently drift from the real one.
 import { SCHEMA_SQL } from "./schema";
 
 // Define an async function that initializes the database.
 // "async" lets us use "await" inside to wait for database operations to finish.
-// "Promise<void>" means this function doesn't return a value — it just does work.
+// "Promise<void>" means this function doesn't return a value, it just does work.
 async function initDB(): Promise<void> {
   // Create a temporary connection pool connected to the default "postgres" database.
   // We need this admin connection because you can't create a database while connected to it.
@@ -16,10 +16,10 @@ async function initDB(): Promise<void> {
   const adminPool = new Pool({
     // The PostgreSQL username to authenticate with.
     user: config.dbUser,
-    // The "postgres" database is PostgreSQL's default system database — it's always there.
+    // The "postgres" database is PostgreSQL's default system database, it's always there.
     // We connect to it temporarily to create our actual application database.
     database: "postgres",
-    // The database host — must match the app pool's config, otherwise this
+    // The database host, must match the app pool's config, otherwise this
     // admin connection tries "localhost" even when running against a
     // separate "db" container (e.g. in docker-compose) and fails to connect.
     host: config.dbHost,
@@ -33,16 +33,16 @@ async function initDB(): Promise<void> {
   const dbName = config.dbName;
 
   // The "try" block is where we do our work. If anything goes wrong, the "catch" block handles it.
-  // The "finally" block ALWAYS runs — whether things succeeded or failed.
+  // The "finally" block ALWAYS runs, whether things succeeded or failed.
   // This is important because we ALWAYS want to close our admin connection when we're done.
   try {
     // This SQL query asks PostgreSQL: "Does a database with this name already exist?"
-    // "SELECT 1" just picks a dummy value — we don't care about the value, we care about whether ANY rows come back.
+    // "SELECT 1" just picks a dummy value, we don't care about the value, we care about whether ANY rows come back.
     // "FROM pg_database" is PostgreSQL's built-in list of all databases.
     // "WHERE datname = $1" filters to only the database whose name matches our variable.
-    // The $1 is a "parameter placeholder" — it's replaced by [dbName] safely, preventing SQL injection attacks.
+    // The $1 is a "parameter placeholder", it's replaced by [dbName] safely, preventing SQL injection attacks.
     const exists = await adminPool.query(
-      // The SQL query string — $1 will be replaced by the first item in the array below.
+      // The SQL query string, $1 will be replaced by the first item in the array below.
       "SELECT 1 FROM pg_database WHERE datname = $1",
       // The array of values to safely insert into the query's placeholders.
       [dbName]
@@ -64,7 +64,7 @@ async function initDB(): Promise<void> {
     }
   } finally {
     // NO MATTER what happened (success or error), close the admin connection.
-    // Leaving connections open wastes resources — like leaving a phone off the hook.
+    // Leaving connections open wastes resources, like leaving a phone off the hook.
     await adminPool.end();
   }
 
@@ -75,7 +75,7 @@ async function initDB(): Promise<void> {
     user: config.dbUser,
     // Connect to our actual application database (the one we just ensured exists).
     database: dbName,
-    // The database host — same reasoning as adminPool above.
+    // The database host, same reasoning as adminPool above.
     host: config.dbHost,
     // The port PostgreSQL is listening on.
     port: config.dbPort,
@@ -92,7 +92,7 @@ async function initDB(): Promise<void> {
     // Let the developer know everything was set up successfully.
     console.log("Tables and indexes created successfully.");
   } finally {
-    // Always close this connection too — we're done with it.
+    // Always close this connection too, we're done with it.
     await appPool.end();
   }
 }
@@ -101,10 +101,10 @@ async function initDB(): Promise<void> {
 // ".then()" runs after initDB() finishes successfully.
 initDB()
   .then(() => {
-    // Everything went well — print a success message.
+    // Everything went well, print a success message.
     console.log("Database initialization complete.");
     // Exit the process with code 0. In programming, exit code 0 means "everything is fine."
-    // This is like a traffic light turning green — all clear.
+    // This is like a traffic light turning green, all clear.
     process.exit(0);
   })
   // ".catch()" runs if initDB() encounters an error.
@@ -112,6 +112,6 @@ initDB()
     // Print the error so the developer can see what went wrong.
     console.error("Database initialization failed:", err);
     // Exit with code 1. Exit code 1 means "something went wrong."
-    // This is like a traffic light turning red — stop, there's a problem.
+    // This is like a traffic light turning red, stop, there's a problem.
     process.exit(1);
   });

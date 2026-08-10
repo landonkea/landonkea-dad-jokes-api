@@ -4,7 +4,7 @@ import { Pool } from "pg";
 import { config } from "../config/env";
 
 // This is an array (a list) of joke objects that we want to insert into the database.
-// Think of this like a shopping list — we're telling the program "here are 30 jokes to add."
+// Think of this like a shopping list, we're telling the program "here are 30 jokes to add."
 // Each joke is an object (wrapped in { }) with properties like setup, punchline, category, etc.
 const seedJokes = [
   {
@@ -14,7 +14,7 @@ const seedJokes = [
     punchline: "Its days are numbered.",
     // The category helps organize jokes into groups (like chapters in a book).
     category: "puns",
-    // Groan level of 8 out of 10 — pretty groan-worthy.
+    // Groan level of 8 out of 10, pretty groan-worthy.
     groan_level: 8,
     // The fictional "dad" who submitted this joke.
     author: "Dad #1",
@@ -227,7 +227,7 @@ const seedJokes = [
 
 // This function connects to the database and inserts all the seed jokes.
 // "async" lets us use "await" inside to wait for database operations to finish.
-// "Promise<void>" means it doesn't return a value — it just performs the seeding work.
+// "Promise<void>" means it doesn't return a value, it just performs the seeding work.
 export async function seedDB(): Promise<void> {
   // Create a new connection pool connected to our application database.
   const pool = new Pool({
@@ -235,7 +235,7 @@ export async function seedDB(): Promise<void> {
     user: config.dbUser,
     // The database name from our config.
     database: config.dbName,
-    // The database host — without this, "pg" defaults to "localhost", which inside a
+    // The database host, without this, "pg" defaults to "localhost", which inside a
     // container (e.g. docker-compose) refers to the container itself, not the separate
     // "db" service, so the connection silently fails. Same class of bug already fixed
     // in db/init.ts and db/pool.ts.
@@ -248,7 +248,7 @@ export async function seedDB(): Promise<void> {
 
   try {
     // First, delete all existing votes. We do this BEFORE deleting jokes because
-    // the votes table has a foreign key linking to jokes — if we tried to delete
+    // the votes table has a foreign key linking to jokes, if we tried to delete
     // jokes first, it might fail because votes still reference them.
     // Think of it like: clean up the bookmarks before you tear out the pages.
     await pool.query("DELETE FROM votes");
@@ -258,7 +258,7 @@ export async function seedDB(): Promise<void> {
     // Without this, the next joke inserted would get id 31 (since we had 30 before).
     // "RESTART WITH 1" tells PostgreSQL to start counting from 1 again.
     await pool.query("ALTER SEQUENCE jokes_id_seq RESTART WITH 1");
-    // Same thing for the votes table — reset its id counter back to 1.
+    // Same thing for the votes table, reset its id counter back to 1.
     await pool.query("ALTER SEQUENCE votes_id_seq RESTART WITH 1");
 
     // Loop through each joke in our seedJokes array, one at a time.
@@ -267,9 +267,9 @@ export async function seedDB(): Promise<void> {
       // Generate a random number of upvotes between 0 and 199.
       // Math.random() gives a decimal between 0 and 1, multiply by 200 to get 0-199,
       // and Math.floor() rounds it down to a whole number.
-      // This makes the seed data look more realistic — not every joke starts at 0 votes.
+      // This makes the seed data look more realistic, not every joke starts at 0 votes.
       const upvotes = Math.floor(Math.random() * 200);
-      // Same idea, but for downvotes — between 0 and 29.
+      // Same idea, but for downvotes, between 0 and 29.
       // We use a smaller range so downvotes are generally less than upvotes (realistic!).
       const downvotes = Math.floor(Math.random() * 30);
       // This SQL inserts one joke into the jokes table.
@@ -310,7 +310,7 @@ export async function seedDB(): Promise<void> {
 }
 
 // Only auto-run seedDB() when this file is executed directly (e.g. "node dist/db/seed.js"
-// or "npm run db:seed") — NOT when it's imported as a module (see db/seedIfEmpty.ts, which
+// or "npm run db:seed"), NOT when it's imported as a module (see db/seedIfEmpty.ts, which
 // imports seedDB() to conditionally seed on container startup without double-running this).
 if (require.main === module) {
   seedDB()

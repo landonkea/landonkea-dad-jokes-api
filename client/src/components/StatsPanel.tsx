@@ -73,7 +73,7 @@ export const StatsPanel: React.FC = () => {
             &ldquo;{stats.most_upvoted.punchline}&rdquo;
           </p>
           <span className="most-upvoted-votes">
-            👍 {stats.most_upvoted.upvotes} upvotes — the people have spoken
+            👍 {stats.most_upvoted.upvotes} upvotes, the people have spoken
           </span>
         </div>
       )}

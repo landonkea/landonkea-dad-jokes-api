@@ -1,11 +1,11 @@
-// Real integration tests for routes/jokes.ts — the query-builder logic (category/sort/limit
+// Real integration tests for routes/jokes.ts, the query-builder logic (category/sort/limit
 // branches, Zod validation, vote dedup, admin-gated delete) that TESTING.md flags as
 // "coming soon". These hit a REAL PostgreSQL database (not a mock) through the actual
 // Express app (src/app.ts), via supertest, so they exercise the whole request/response
 // cycle exactly the way a real client would.
 //
 // Requires a reachable Postgres instance with the connection details from the environment
-// (DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME — see src/test/setup.ts and .env). Locally
+// (DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME, see src/test/setup.ts and .env). Locally
 // this points at a "dad_jokes_test" database (kept separate from the real "dad_jokes" dev
 // database so these tests can freely TRUNCATE tables). CI provisions the same database name
 // via a Postgres service container (see .github/workflows/ci.yml).
@@ -33,7 +33,7 @@ describe("Jokes API routes (integration)", () => {
     app = appModule;
     pool = poolModule;
 
-    // Stand up the real schema against the test database — the exact same SQL db/init.ts
+    // Stand up the real schema against the test database, the exact same SQL db/init.ts
     // runs in production, so there's no second "test schema" to drift out of sync.
     await pool.query(SCHEMA_SQL);
   });
@@ -81,7 +81,7 @@ describe("Jokes API routes (integration)", () => {
   }
 
   // ==========================================================
-  // GET /api/jokes — filtering, sorting, pagination
+  // GET /api/jokes, filtering, sorting, pagination
   // ==========================================================
   describe("GET /api/jokes", () => {
     it("returns an empty list with correct pagination metadata when there are no jokes", async () => {
@@ -164,7 +164,7 @@ describe("Jokes API routes (integration)", () => {
 
       const res = await request(app).get("/api/jokes?sort=controversial");
       const ids = res.body.data.map((j: { id: number }) => j.id);
-      // Most contested (50/50) first, then lopsided, then the untouched 0/0 joke last —
+      // Most contested (50/50) first, then lopsided, then the untouched 0/0 joke last,
       // regression coverage for the ABS(diff) bug fixed in utils/sortOptions.ts.
       expect(ids).toEqual([contested, lopsided, untouched]);
     });
@@ -200,7 +200,7 @@ describe("Jokes API routes (integration)", () => {
   });
 
   // ==========================================================
-  // GET /api/jokes?q= — trigram/fuzzy search (see db/schema.ts pg_trgm indexes)
+  // GET /api/jokes?q=, trigram/fuzzy search (see db/schema.ts pg_trgm indexes)
   // ==========================================================
   describe("GET /api/jokes?q= (search)", () => {
     it("matches an exact substring in the setup", async () => {
@@ -234,7 +234,7 @@ describe("Jokes API routes (integration)", () => {
       });
       await insertJoke({ setup: "Why don't eggs tell jokes?", punchline: "They'd crack each other up." });
 
-      // "scarcrow" (missing an "e") is a one-letter typo of "scarecrow" — trigram
+      // "scarcrow" (missing an "e") is a one-letter typo of "scarecrow", trigram
       // similarity should still surface it even though it's not an exact substring.
       const res = await request(app).get("/api/jokes?q=scarcrow");
       expect(res.status).toBe(200);
@@ -272,7 +272,7 @@ describe("Jokes API routes (integration)", () => {
 
     it("orders results by relevance, best match first", async () => {
       // "cat" is an exact, standalone-word match in the second joke's setup, and only a
-      // substring of "category" in the first — the exact word match should score higher
+      // substring of "category" in the first, the exact word match should score higher
       // and come first in the results.
       const weakMatch = await insertJoke({ setup: "Why did the category theory joke fail?", punchline: "Too abstract." });
       const strongMatch = await insertJoke({ setup: "Why did the cat sit on the computer?", punchline: "To keep an eye on the mouse." });
@@ -397,7 +397,7 @@ describe("Jokes API routes (integration)", () => {
   });
 
   // ==========================================================
-  // POST /api/jokes — Zod validation + defaults
+  // POST /api/jokes, Zod validation + defaults
   // ==========================================================
   describe("POST /api/jokes", () => {
     it("creates a joke and applies defaults for omitted optional fields", async () => {
@@ -435,7 +435,7 @@ describe("Jokes API routes (integration)", () => {
       const byId = await request(app).get(`/api/jokes/${id}`);
       expect(byId.status).toBe(404);
 
-      // Random draws only from approved jokes — with nothing approved yet, it 404s.
+      // Random draws only from approved jokes, with nothing approved yet, it 404s.
       const random = await request(app).get("/api/jokes/random");
       expect(random.status).toBe(404);
     });
@@ -491,7 +491,7 @@ describe("Jokes API routes (integration)", () => {
   });
 
   // ==========================================================
-  // POST /api/jokes/vote — dedup by IP, validation
+  // POST /api/jokes/vote, dedup by IP, validation
   // ==========================================================
   describe("POST /api/jokes/vote", () => {
     it("increments upvotes on an 'up' vote", async () => {
@@ -624,7 +624,7 @@ describe("Jokes API routes (integration)", () => {
         const list = await request(app).get("/api/jokes");
         expect(list.body.data.map((j: { id: number }) => j.id)).not.toContain(id);
 
-        // The row is kept (not deleted) — it just no longer shows up as pending either.
+        // The row is kept (not deleted), it just no longer shows up as pending either.
         const pending = await request(app).get("/api/jokes/pending").set("x-admin-token", ADMIN_TOKEN!);
         expect(pending.body.data.map((j: { id: number }) => j.id)).not.toContain(id);
       });
@@ -654,7 +654,7 @@ describe("Jokes API routes (integration)", () => {
   });
 
   // ==========================================================
-  // DELETE /api/jokes/:id — admin-token gated
+  // DELETE /api/jokes/:id, admin-token gated
   // ==========================================================
   describe("DELETE /api/jokes/:id", () => {
     it("rejects with 401 when no x-admin-token header is provided", async () => {

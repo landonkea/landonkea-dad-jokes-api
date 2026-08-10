@@ -9,7 +9,7 @@ dotenv.config();
 
 // Import the configured app AFTER dotenv.config() has run.
 import app from "./app";
-// Import our config object — it contains validated environment variables like port number.
+// Import our config object, it contains validated environment variables like port number.
 import { config } from "./config/env";
 
 // Start the server and listen for incoming connections on the configured port (default 3001).

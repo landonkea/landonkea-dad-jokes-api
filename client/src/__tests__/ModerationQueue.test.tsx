@@ -1,4 +1,4 @@
-// Tests for components/ModerationQueue.tsx — the admin panel that lists jokes awaiting
+// Tests for components/ModerationQueue.tsx, the admin panel that lists jokes awaiting
 // moderation and lets an admin approve or reject each one. No real server here (that's
 // covered by the server-side integration tests); instead we stub global.fetch so we can
 // exercise the component's request-building, loading/error states, and optimistic list

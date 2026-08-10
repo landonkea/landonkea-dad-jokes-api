@@ -1,14 +1,14 @@
 // This file defines "shapes" of data used throughout the app.
-// Think of these like blueprints — they tell TypeScript what each piece of data looks like,
+// Think of these like blueprints, they tell TypeScript what each piece of data looks like,
 // so if you make a typo like "punchlnie" instead of "punchline", TypeScript catches it for you.
 
 // This is the shape of a single joke as it lives in the database.
-// Every joke has all of these fields — nothing is optional here.
+// Every joke has all of these fields, nothing is optional here.
 export interface Joke {
   // A unique number that identifies this joke (like a student ID number).
   // Every joke gets a different number so we can find it later.
   id: number;
-  // The "setup" is the first part of the joke — the part that sets up the punchline.
+  // The "setup" is the first part of the joke, the part that sets up the punchline.
   // For example: "I'm afraid for the calendar."
   setup: string;
   // The "punchline" is the funny payoff at the end of the joke.
@@ -40,13 +40,13 @@ export interface Joke {
 }
 
 // This is the shape of data that someone sends when they want to CREATE a new joke.
-// Notice some fields have a "?" after them — that means they're optional (you don't have to provide them).
+// Notice some fields have a "?" after them, that means they're optional (you don't have to provide them).
 // Think of it like an order form where some fields are required and some are optional.
 export interface JokeInput {
-  // The setup part of the joke — this is REQUIRED (no "?").
+  // The setup part of the joke, this is REQUIRED (no "?").
   // You can't have a joke without a setup.
   setup: string;
-  // The punchline part of the joke — also REQUIRED.
+  // The punchline part of the joke, also REQUIRED.
   // You can't have a joke without a punchline.
   punchline: string;
   // The category is optional ("?"). If you don't pick one, it defaults to "classic".
@@ -59,17 +59,17 @@ export interface JokeInput {
 }
 
 // This is the shape of data someone sends when they want to UPVOTE or DOWNVOTE a joke.
-// It's a small payload — just two pieces of information.
+// It's a small payload, just two pieces of information.
 export interface VotePayload {
   // Which joke are we voting on? This is the joke's ID number from the database.
   joke_id: number;
   // Are we giving a thumbs-up ("up") or thumbs-down ("down")?
-  // The quotes around "up" | "down" mean it MUST be exactly one of those two words — nothing else.
+  // The quotes around "up" | "down" mean it MUST be exactly one of those two words, nothing else.
   vote_type: "up" | "down";
 }
 
 // This is the STANDARD shape that every API response follows.
-// The <T> is a "generic" — it's a placeholder that can be replaced with any type.
+// The <T> is a "generic", it's a placeholder that can be replaced with any type.
 // For example, ApiResponse<Joke> means "a response that contains Joke data."
 // Think of it like a envelope: the envelope always looks the same (success, data, error),
 // but what's inside (the "data" part) can be different depending on the situation.
@@ -82,7 +82,7 @@ export interface ApiResponse<T> {
   // A human-readable error message. This is also optional because if the request was successful,
   // there's no error message to send.
   error?: string;
-  // Pagination metadata — only present on list endpoints (like GET /api/jokes) that support
+  // Pagination metadata, only present on list endpoints (like GET /api/jokes) that support
   // page/limit/offset query params. Lets the client render "page 2 of 5" style UI and know
   // whether there are more results to fetch.
   pagination?: {
@@ -105,7 +105,7 @@ export interface StatsResponse {
   // If joke A is groan level 7 and joke B is groan level 9, the average would be 8.0.
   avg_groan_level: number;
   // The joke with the most upvotes. This could be "null" if there are no jokes at all.
-  // "null" means "nothing here" — like an empty box.
+  // "null" means "nothing here", like an empty box.
   most_upvoted: Joke | null;
   // An array (list) of objects, where each object tells you a category name and how many jokes are in it.
   // For example: [{ category: "puns", count: 5 }, { category: "animals", count: 3 }]

@@ -1,6 +1,6 @@
 #!/bin/sh
 # =============================================================================
-# docker-entrypoint.sh — Container startup sequence for the "app" service
+# docker-entrypoint.sh, Container startup sequence for the "app" service
 # =============================================================================
 # WHAT: Runs before the Express server starts. Ensures the database schema
 #       exists, seeds sample data on a brand-new/empty database, then hands
@@ -10,7 +10,7 @@
 #       that touches the database 500s with "relation \"jokes\" does not
 #       exist". Running init (and a first-time seed) as part of container
 #       startup means the stack is actually usable right after
-#       "docker compose up --build" — no manual "docker compose exec"
+#       "docker compose up --build", no manual "docker compose exec"
 #       step required.
 # HOW:  Retries db/init.js a few times (Postgres may not be accepting
 #       connections the instant its container starts, since depends_on only
@@ -28,7 +28,7 @@ until node server/dist/db/init.js; do
     echo "Database did not become ready after $max_attempts attempts. Giving up."
     exit 1
   fi
-  echo "Database not ready yet (attempt $attempt/$max_attempts) — retrying in 2s..."
+  echo "Database not ready yet (attempt $attempt/$max_attempts), retrying in 2s..."
   attempt=$((attempt + 1))
   sleep 2
 done

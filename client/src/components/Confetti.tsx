@@ -32,7 +32,7 @@ export const Confetti: React.FC<ConfettiProps> = ({ trigger, onComplete }) => {
 
   // This effect runs whenever the "trigger" prop changes.
   useEffect(() => {
-    // If trigger is false, do nothing — no confetti to show
+    // If trigger is false, do nothing, no confetti to show
     if (!trigger) return;
     // Generate 60 confetti pieces with random properties and store them in state
     setPieces(makePieces(60));

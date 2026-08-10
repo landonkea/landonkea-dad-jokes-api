@@ -24,10 +24,10 @@ async function seedIfEmpty(): Promise<void> {
   }
 
   if (count === 0) {
-    console.log("Jokes table is empty — seeding sample data.");
+    console.log("Jokes table is empty, seeding sample data.");
     await seedDB();
   } else {
-    console.log(`Jokes table already has ${count} row(s) — skipping seed.`);
+    console.log(`Jokes table already has ${count} row(s), skipping seed.`);
   }
 }
 

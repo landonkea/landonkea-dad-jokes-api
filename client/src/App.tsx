@@ -1,29 +1,29 @@
 // Import the core React library plus two hooks: useState for managing state, useCallback for memoizing functions
 import React, { useState, useCallback } from "react";
-// Import the Header component — displays the site title and tagline at the top of the page
+// Import the Header component, displays the site title and tagline at the top of the page
 import { Header } from "./components/Header";
-// Import the JokeCard component — shows a single random joke with voting and punchline reveal
+// Import the JokeCard component, shows a single random joke with voting and punchline reveal
 import { JokeCard } from "./components/JokeCard";
-// Import the JokeList component — displays a scrollable list of jokes with filtering and sorting
+// Import the JokeList component, displays a scrollable list of jokes with filtering and sorting
 import { JokeList } from "./components/JokeList";
-// Import the CategoryPicker component — renders category filter buttons so users can narrow jokes by type
+// Import the CategoryPicker component, renders category filter buttons so users can narrow jokes by type
 import { CategoryPicker } from "./components/CategoryPicker";
-// Import the SearchBox component — a text search for finding jokes by setup/punchline content
+// Import the SearchBox component, a text search for finding jokes by setup/punchline content
 import { SearchBox } from "./components/SearchBox";
-// Import the JokeSubmitter component — renders a form where users can submit their own dad jokes
+// Import the JokeSubmitter component, renders a form where users can submit their own dad jokes
 import { JokeSubmitter } from "./components/JokeSubmitter";
-// Import the StatsPanel component — displays statistics and analytics about all the jokes
+// Import the StatsPanel component, displays statistics and analytics about all the jokes
 import { StatsPanel } from "./components/StatsPanel";
-// Import the ModerationQueue component — the admin-only panel for approving/rejecting submissions
+// Import the ModerationQueue component, the admin-only panel for approving/rejecting submissions
 import { ModerationQueue } from "./components/ModerationQueue";
-// Import the Particles component — renders floating emoji particles in the background for visual flair
+// Import the Particles component, renders floating emoji particles in the background for visual flair
 import { Particles } from "./components/Particles";
-// Import the Marquee component — a scrolling ticker at the top that shows joke setups and punchlines
+// Import the Marquee component, a scrolling ticker at the top that shows joke setups and punchlines
 import { Marquee } from "./components/Marquee";
-// Import the ThemeToggle component — a button that switches between dark and light mode
+// Import the ThemeToggle component, a button that switches between dark and light mode
 import { ThemeToggle } from "./components/ThemeToggle";
 
-// Define a TypeScript type that can only be one of these five tab names — prevents typos and gives autocomplete
+// Define a TypeScript type that can only be one of these five tab names, prevents typos and gives autocomplete
 type Tab = "random" | "browse" | "submit" | "stats" | "moderate";
 
 // Create an object that maps each tab name to a funny tagline shown below the nav bar
@@ -112,9 +112,9 @@ const App: React.FC = () => {
         {/* Only render the browse section if the "browse" tab is active */}
         {activeTab === "browse" && (
           <div className="browse-section">
-            {/* Search box — searches setup/punchline text (typo-tolerant) via ?q= */}
+            {/* Search box, searches setup/punchline text (typo-tolerant) via ?q= */}
             <SearchBox value={searchQuery} onChange={setSearchQuery} />
-            {/* Category filter buttons — pass current selection and setter to update it */}
+            {/* Category filter buttons, pass current selection and setter to update it */}
             <CategoryPicker
               selected={selectedCategory}
               onChange={setSelectedCategory}
@@ -122,7 +122,7 @@ const App: React.FC = () => {
             {/* A row of controls for sorting the joke list */}
             <div className="sort-controls">
               <label>Sort by: </label>
-              {/* Dropdown for choosing how to sort jokes. Disabled while searching — a
+              {/* Dropdown for choosing how to sort jokes. Disabled while searching, a
                   search always orders by relevance (see routes/jokes.ts). */}
               <select
                 value={sortBy || ""}

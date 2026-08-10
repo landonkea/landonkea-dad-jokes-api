@@ -2,7 +2,7 @@
 
 > *"Where every punchline is a groan-worthy masterpiece."*
 
-A full-stack web application built with **React**, **Node.js/Express**, **TypeScript**, and **PostgreSQL**. Nearly zero hardcoded HTML — almost everything is dynamically generated with JavaScript. The theme? The most groan-inducing, eye-rolling, "dad is that you?" humor on the internet.
+A full-stack web application built with **React**, **Node.js/Express**, **TypeScript**, and **PostgreSQL**. Nearly zero hardcoded HTML, almost everything is dynamically generated with JavaScript. The theme? The most groan-inducing, eye-rolling, "dad is that you?" humor on the internet.
 
 ---
 
@@ -73,9 +73,9 @@ It has a flashy dark theme with animations, confetti, floating emojis, and neon 
 | **Frontend** | React 18 + TypeScript | Builds the user interface you see and click on |
 | **Build Tool** | Vite | Blazing-fast dev server that compiles your React code |
 | **Backend** | Node.js + Express | Receives requests from the browser, talks to the database |
-| **Language** | TypeScript | JavaScript with type safety — catches errors before they happen |
+| **Language** | TypeScript | JavaScript with type safety, catches errors before they happen |
 | **Database** | PostgreSQL | Stores all jokes, votes, and categories |
-| **Styling** | Pure CSS | All visual design — no CSS frameworks needed |
+| **Styling** | Pure CSS | All visual design, no CSS frameworks needed |
 
 ---
 
@@ -85,9 +85,9 @@ It has a flashy dark theme with animations, confetti, floating emojis, and neon 
 
 You need these installed on your computer:
 
-- **Node.js** (v18 or newer) — [Download here](https://nodejs.org)
-- **PostgreSQL** — [Download here](https://www.postgresql.org/download/)
-- A code editor like **VS Code** — [Download here](https://code.visualstudio.com)
+- **Node.js** (v18 or newer): [Download here](https://nodejs.org)
+- **PostgreSQL**: [Download here](https://www.postgresql.org/download/)
+- A code editor like **VS Code**: [Download here](https://code.visualstudio.com)
 
 ### Step 1: Open a terminal
 
@@ -113,7 +113,7 @@ This installs all the JavaScript packages the project needs. It takes about 30 s
 # Mac (Homebrew)
 brew services start postgresql
 
-# Windows — it usually starts automatically
+# Windows: it usually starts automatically
 # Linux
 sudo systemctl start postgresql
 ```
@@ -142,7 +142,7 @@ npm run start
 
 ### Step 8: Open your browser
 
-Go to **http://localhost:5173** — enjoy the groans!
+Go to **http://localhost:5173**, enjoy the groans!
 
 ---
 
@@ -234,7 +234,7 @@ Tells git "don't track these files." We ignore `node_modules/` (huge, regenerate
 
 ### Server Files (`server/`)
 
-#### `server/src/index.ts` — The Server's Front Door
+#### `server/src/index.ts`: The Server's Front Door
 This is where the server starts. It:
 1. Creates an Express app (like opening a restaurant)
 2. Enables CORS (lets the browser connect)
@@ -242,7 +242,7 @@ This is where the server starts. It:
 4. Connects the jokes routes (the menu)
 5. Starts listening on port 3001
 
-#### `server/src/types/index.ts` — The Blueprints
+#### `server/src/types/index.ts`: The Blueprints
 Defines what a "joke" looks like in TypeScript. Think of it as a form template:
 - `id`: A unique number
 - `setup`: The first part of the joke
@@ -251,10 +251,10 @@ Defines what a "joke" looks like in TypeScript. Think of it as a form template:
 - `groan_level`: How cringe-worthy (1-10)
 - `upvotes`/`downvotes`: How many people liked/disliked it
 
-#### `server/src/db/pool.ts` — Database Connection
-Creates a connection to PostgreSQL. Think of `pool` as a taxi stand — it keeps a few database connections ready so you don't have to wait for a new one each time.
+#### `server/src/db/pool.ts`: Database Connection
+Creates a connection to PostgreSQL. Think of `pool` as a taxi stand, it keeps a few database connections ready so you don't have to wait for a new one each time.
 
-#### `server/src/db/init.ts` — Database Setup Script
+#### `server/src/db/init.ts`: Database Setup Script
 Run once with `npm run db:init`. It:
 1. Connects to PostgreSQL
 2. Creates the "dad_jokes" database if it doesn't exist
@@ -262,10 +262,10 @@ Run once with `npm run db:init`. It:
 4. Creates the `votes` table (where votes live)
 5. Adds indexes (like a book's index for faster lookups)
 
-#### `server/src/db/seed.ts` — Fills Database with Jokes
+#### `server/src/db/seed.ts`: Fills Database with Jokes
 Run once with `npm run db:seed`. Puts 30 pre-written dad jokes into the database with random vote counts.
 
-#### `server/src/routes/jokes.ts` — The API Menu
+#### `server/src/routes/jokes.ts`: The API Menu
 Defines all the URLs the server responds to:
 
 | URL | What It Does |
@@ -276,10 +276,10 @@ Defines all the URLs the server responds to:
 | `GET /api/jokes/stats` | Get statistics (approved jokes only, plus `pending_count`) |
 | `GET /api/jokes/pending` 🔒 | List jokes awaiting moderation (admin only) |
 | `GET /api/jokes/:id` | Get one specific **approved** joke |
-| `POST /api/jokes` | Submit a new joke — lands as `status: "pending"`, not yet public |
+| `POST /api/jokes` | Submit a new joke, lands as `status: "pending"`, not yet public |
 | `POST /api/jokes/vote` | Upvote or downvote (approved jokes only) |
 | `POST /api/jokes/:id/approve` 🔒 | Approve a pending joke, making it public (admin only) |
-| `POST /api/jokes/:id/reject` 🔒 | Reject a pending joke — kept in the DB, stays non-public (admin only) |
+| `POST /api/jokes/:id/reject` 🔒 | Reject a pending joke, kept in the DB, stays non-public (admin only) |
 | `DELETE /api/jokes/:id` 🔒 | Delete a joke (admin only) |
 
 🔒 = requires the `x-admin-token` header to match the server's `ADMIN_TOKEN` env var.
@@ -289,17 +289,17 @@ and is invisible to the public API until an admin approves it. This closes the o
 any submission (including spam) went straight to the live, votable joke list. See
 `client/src/components/ModerationQueue.tsx` for the admin review UI (the "Moderate" tab).
 
-#### `server/src/middleware/errorHandler.ts` — The Safety Net
+#### `server/src/middleware/errorHandler.ts`: The Safety Net
 Catches any errors that crash the server and returns a friendly message instead of a blank screen.
 
 ---
 
 ### Client Files (`client/`)
 
-#### `client/src/main.tsx` — React's Starting Line
+#### `client/src/main.tsx`: React's Starting Line
 Tells React "find the `<div id="root">` in index.html and put the App component inside it."
 
-#### `client/src/App.tsx` — The Main Controller
+#### `client/src/App.tsx`: The Main Controller
 Decides which tab is active and renders the right component:
 - "Random Joke" tab → `JokeCard`
 - "Browse" tab → `CategoryPicker` + `JokeList`
@@ -309,7 +309,7 @@ Decides which tab is active and renders the right component:
 
 Also renders `Particles` (floating emojis) and `Marquee` (scrolling ticker) in the background.
 
-#### `client/src/hooks/useJokes.ts` — The Server Messenger
+#### `client/src/hooks/useJokes.ts`: The Server Messenger
 Contains functions that talk to the server. When the UI says "get me a random joke," this file makes the actual HTTP request:
 - `fetchRandomJoke()` → GET `/api/jokes/random`
 - `fetchJokes()` → GET `/api/jokes`
@@ -319,7 +319,7 @@ Contains functions that talk to the server. When the UI says "get me a random jo
 - `fetchPendingJokes()` → GET `/api/jokes/pending` (admin)
 - `approveJoke()` / `rejectJoke()` → POST `/api/jokes/:id/approve` / `/api/jokes/:id/reject` (admin)
 
-#### `client/src/hooks/useRandomJoke.ts` — The Random Joke Hook
+#### `client/src/hooks/useRandomJoke.ts`: The Random Joke Hook
 A custom React hook that:
 1. Fetches a random joke when the component loads
 2. Tracks loading/error states
@@ -330,7 +330,7 @@ A custom React hook that:
 | Component | What It Renders |
 |-----------|----------------|
 | `Header.tsx` | The big title at the top with neon gradient text |
-| `JokeCard.tsx` | The main joke display — setup, punchline reveal, voting, confetti |
+| `JokeCard.tsx` | The main joke display, setup, punchline reveal, voting, confetti |
 | `JokeList.tsx` | A scrollable list of jokes you can click to expand |
 | `CategoryPicker.tsx` | Buttons to filter jokes by category |
 | `JokeSubmitter.tsx` | A form to submit new jokes with a groan-level slider |
@@ -340,7 +340,7 @@ A custom React hook that:
 | `Confetti.tsx` | Fires colorful confetti pieces on screen |
 | `Toast.tsx` | Pop-up notification messages at the bottom of the screen |
 
-#### `client/src/styles/global.css` — All the Visual Magic
+#### `client/src/styles/global.css`: All the Visual Magic
 Every pixel of styling lives here: the dark neon theme, animations, glassmorphism cards, responsive layout, floating particles, and confetti. Over 1400 lines of pure CSS.
 
 ---
@@ -358,8 +358,8 @@ Every pixel of styling lives here: the dark neon theme, animations, glassmorphis
 7. PostgreSQL returns a random joke
 8. The server sends it back as JSON
 9. The hook receives it, React re-renders the joke on screen
-10. You click "Reveal the Punchline" — this is pure UI, no server needed
-11. You click 👍 — the UI calls `voteJoke()` → sends POST to server → server updates the database
+10. You click "Reveal the Punchline", this is pure UI, no server needed
+11. You click 👍, the UI calls `voteJoke()` → sends POST to server → server updates the database
 
 ---
 
@@ -383,7 +383,7 @@ Every pixel of styling lives here: the dark neon theme, animations, glassmorphis
 `client/src/components/ThemeToggle.tsx` lets users switch between dark and light themes. Preference is saved to localStorage and persists across sessions.
 
 ### Skeleton Loading (Client)
-`client/src/components/Skeleton.tsx` shows shimmer placeholders while content loads — better UX than a spinner because it shows the shape of incoming content.
+`client/src/components/Skeleton.tsx` shows shimmer placeholders while content loads, better UX than a spinner because it shows the shape of incoming content.
 
 ### Environment Validation (Server)
 `server/src/config/env.ts` validates that all required environment variables are set at startup. Fails fast with a clear error instead of mysterious crashes later.
@@ -454,4 +454,4 @@ Testing frameworks to be added:
 
 ## License
 
-Do whatever you want with it. Just don't tell your kids these jokes at bedtime — they'll never sleep.
+Do whatever you want with it. Just don't tell your kids these jokes at bedtime, they'll never sleep.
