@@ -43,3 +43,8 @@ dist/
 # artifact (see .github/workflows/ci.yml) rather than committing it, since it's a
 # snapshot of "last CI run," not source code.
 test-results/
+
+# playwright-report/ and blob-report/ = HTML/blob output from `npm run test:e2e`.
+# Regenerated on every run, not meant to be committed.
+playwright-report/
+blob-report/

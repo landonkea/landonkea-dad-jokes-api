@@ -20,7 +20,7 @@ A full-stack web application built with **React**, **Node.js/Express**, **TypeSc
 - [Docker](#docker)
 - [CI/CD](#cicd)
 - [Common Issues](#common-issues)
-- [What's Next (Testing)](#whats-next-testing)
+- [Testing](#testing)
 
 ---
 
@@ -435,20 +435,17 @@ Run `npm run setup` again to reinstall dependencies.
 
 ---
 
-## What's Next (Testing)
+## Testing
 
-Planned testing additions:
+Three layers of tests cover this app, all passing:
 
-- **Unit Tests**: Test individual functions in isolation (e.g., "does `fetchRandomJoke` return a joke?")
-- **Integration Tests**: Test that components work together (e.g., "does voting update the count?")
-- **TDD (Test-Driven Development)**: Write tests first, then write code to pass them
-- **BDD (Behavior-Driven Development)**: Write tests in plain English that non-coders can read
+- **Server** (`server/src/__tests__/`, 81 tests across 5 files): Vitest + Supertest drive the real Express app against a real Postgres database (`dad_jokes_test`), covering routing, pagination, sort order, admin-token auth, and the full moderation queue lifecycle — submit, land as `pending`, approve, reject.
+- **Client** (`client/src/__tests__/`, 22 tests across 5 files): Vitest + React Testing Library render the actual components, including an integration test that clicks the upvote button on a `JokeCard` and checks the count and disabled state update together.
+- **End-to-end** (`e2e/joke-voting.spec.ts`): Playwright drives a real Chromium browser through the real UI — reveal a punchline, cast an upvote, browse the seeded list — against the actual dev server and a freshly reseeded database. Run it with `npm run test:e2e`.
 
-Testing frameworks to be added:
-- **Jest** + **React Testing Library** (frontend)
-- **Vitest** (Vite-native testing)
-- **Supertest** (API endpoint testing)
-- **Cypress** or **Playwright** (end-to-end browser testing)
+The frontend suite runs on Vitest rather than Jest. Both halves of this repo already run on Vite/esbuild-based tooling, and Vitest gives the same `describe`/`it`/`expect` API and `jest-dom` matchers as Jest without a second transform pipeline to maintain in a Vite project. Running two different test runners for one small app didn't seem worth it.
+
+For how to run each suite and the TDD/BDD conventions this project follows, see `TESTING.md`.
 
 ---
 
