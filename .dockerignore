@@ -1,0 +1,44 @@
+# =============================================================================
+# .dockerignore — files Docker never sends into the build context
+# =============================================================================
+# WHAT: Same idea as .gitignore, but for "docker build" instead of "git add."
+#       Anything matched here never leaves your machine when an image builds.
+# WHY:  Without this, "docker build ." was uploading every local node_modules
+#       folder into the build context, then each stage's "COPY server/ ./server/"
+#       (and the same for client/) copied it straight into the image on top of
+#       the node_modules that stage's own "npm ci" had just installed. Locally
+#       built binaries like esbuild and lightningcss are platform-specific, so
+#       a macOS node_modules copied into an Alpine Linux container can silently
+#       replace a working Linux binary with one that won't run there. This file
+#       existing at all is the fix, regardless of which patterns it lists.
+# HOW:  Same glob syntax as .gitignore, evaluated relative to this directory.
+# =============================================================================
+
+node_modules
+**/node_modules
+
+dist
+**/dist
+
+.git
+.gitignore
+
+# Real secrets (.env) and per-environment templates (.env.dev/.env.staging/
+# .env.prod) are handed to containers at runtime via docker-compose's
+# "env_file:", never baked into an image layer.
+.env
+.env.dev
+.env.staging
+.env.prod
+.env.local
+.env.*.local
+
+test-results
+playwright-report
+blob-report
+coverage
+
+*.log
+.DS_Store
+.idea
+.vscode

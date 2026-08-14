@@ -7,6 +7,15 @@
 #       machine, and in production — no "it works on my machine" problems.
 # HOW:  We use a "multi-stage build" — install deps, build the client, then
 #       copy only what's needed into a slim final image. This keeps it small.
+#
+# Four stages total: "server-build" and "client-build" compile the two
+# halves of the app, "development" is a hot-reload image for local work
+# (see docker-compose.dev.yml), and "production" is the slim, compiled
+# image that dev, staging, and prod all deploy from — the same artifact is
+# promoted across environments rather than rebuilt per environment, so
+# environment differences live in env files and compose files, not in the
+# image itself. "production" stays LAST in this file so a plain
+# "docker build ." with no --target keeps defaulting to it.
 # =============================================================================
 
 # ---------------------------------------------------------------------------
@@ -71,7 +80,55 @@ COPY client/ ./client/
 RUN cd client && npm run build
 
 # ---------------------------------------------------------------------------
-# STAGE 3: "production" — Assemble the final, lean runtime image
+# STAGE 3: "development" — local hot-reload image for docker-compose.dev.yml
+# ---------------------------------------------------------------------------
+# WHAT: Runs the server with "tsx watch" and the client with the Vite dev
+#       server, both against source that's bind-mounted from the host (see
+#       the "volumes:" entries in docker-compose.dev.yml) instead of a
+#       compiled build.
+# WHY:  The "production" stage below exists to ship a small, compiled,
+#       reproducible artifact, which is the opposite of what's useful while
+#       actively editing code. This stage keeps devDependencies (tsx, vite)
+#       around and never runs "npm run build", so a source edit on the host
+#       shows up in the running container without rebuilding the image.
+# HOW:  Installs root, server, and client dependencies (root needs
+#       "concurrently" since "npm run dev" runs both processes at once via
+#       the root package.json), copies the repo in as a fallback for a first
+#       "docker compose up" before any bind mount has attached, then leaves
+#       docker-compose.dev.yml to mount live source over it.
+#
+# This stage is declared BEFORE "production" on purpose: a bare
+# "docker build ." with no --target flag builds whichever stage is LAST in
+# the file, and that needs to stay "production" so the existing CI job and
+# any plain "docker build ." keep working unchanged. This stage only gets
+# built when something asks for it by name, e.g.
+# "docker compose -f docker-compose.dev.yml up --build".
+# ---------------------------------------------------------------------------
+FROM node:20-alpine AS development
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY server/package*.json ./server/
+RUN cd server && npm install
+
+COPY client/package*.json ./client/
+RUN cd client && npm install
+
+COPY . .
+
+# 3001 is the Express server, 5173 is Vite's dev server (with hot module
+# reload for the React client). Both are needed since "npm run dev" starts
+# them concurrently rather than serving the client from Express like
+# production does.
+EXPOSE 3001 5173
+
+CMD ["npm", "run", "dev"]
+
+# ---------------------------------------------------------------------------
+# STAGE 4: "production" — Assemble the final, lean runtime image
 # ---------------------------------------------------------------------------
 # This is the image that actually ships and runs in production. It starts
 # fresh from the small Alpine base — none of the devDependencies or source
