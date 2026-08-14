@@ -12,7 +12,10 @@
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "dev": "npm run start",
     "test:summary": "node scripts/generate-test-summary.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "docker:dev": "docker compose -f docker-compose.dev.yml up --build",
+    "docker:staging": "docker compose -f docker-compose.staging.yml up --build",
+    "docker:prod": "docker compose -f docker-compose.prod.yml up --build"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

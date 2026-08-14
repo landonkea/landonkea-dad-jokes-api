@@ -1,0 +1,36 @@
+# =============================================================================
+# docker-compose.staging.yml — Staging environment (config only, not deployed)
+# =============================================================================
+# WHAT: Builds and runs the same "production" Dockerfile stage that prod
+#       uses, configured with .env.staging instead of .env.prod.
+# WHY:  Staging is supposed to be the closest thing to production before
+#       something actually reaches it, running the exact image target prod
+#       will run, not a separate "staging build," is what makes that true.
+#       The only thing that changes between staging and prod is which env
+#       file and which database it points at.
+#
+#       Unlike docker-compose.dev.yml, there is no "db" service here on
+#       purpose. Staging is meant to connect to a real, separately hosted
+#       Postgres instance, the same way prod will, rather than a disposable
+#       local container. No such host exists yet (no staging hosting account
+#       has been set up), so DB_HOST/DB_USER/DB_PASSWORD in .env.staging are
+#       REPLACE_ME placeholders. Running "up" against those placeholders
+#       will fail to connect, and that's expected: this file is pipeline
+#       scaffolding for when a staging host exists, not a live deployment.
+# HOW:  Once .env.staging is filled in with a real database host:
+#         docker compose -f docker-compose.staging.yml up --build
+# =============================================================================
+
+name: dad-jokes-staging
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    image: dad-jokes-api:staging
+    env_file:
+      - .env.staging
+    ports:
+      - "3001:3001"
+    restart: unless-stopped

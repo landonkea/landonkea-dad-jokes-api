@@ -1,0 +1,33 @@
+# =============================================================================
+# docker-compose.prod.yml — Production environment (config only, not deployed)
+# =============================================================================
+# WHAT: Builds and runs the same "production" Dockerfile stage as staging,
+#       configured with .env.prod instead of .env.staging.
+# WHY:  Same reasoning as docker-compose.staging.yml: no db service is
+#       defined here, production is expected to connect to a real, managed
+#       Postgres instance, not a disposable local container. No production
+#       host exists yet, so DB_HOST/DB_USER/DB_PASSWORD in .env.prod are
+#       REPLACE_ME placeholders and "up" will fail to connect until those
+#       are filled in with a real host. That's expected here: this file is
+#       pipeline scaffolding, not a live deployment.
+# HOW:  Once .env.prod is filled in with a real database host:
+#         docker compose -f docker-compose.prod.yml up --build
+#
+# "restart: always" (rather than staging's "unless-stopped") because prod
+# should come back on its own after a host reboot without anyone deciding
+# that per-incident.
+# =============================================================================
+
+name: dad-jokes-prod
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    image: dad-jokes-api:prod
+    env_file:
+      - .env.prod
+    ports:
+      - "3001:3001"
+    restart: always
