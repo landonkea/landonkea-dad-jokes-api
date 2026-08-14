@@ -1,0 +1,41 @@
+# =============================================================================
+# Deploy Dev — Builds and validates the dev-environment image
+# =============================================================================
+# WHAT: Builds the Dockerfile's "development" stage, the same one
+#       docker-compose.dev.yml runs locally, and tags it with the commit SHA.
+# WHY:  ci.yml's "docker" job already builds and smoke-tests the "production"
+#       stage on every push to main/dev. This workflow covers what that one
+#       doesn't: confirming the "development" stage (a different set of
+#       COPY/RUN instructions, see the Dockerfile) also builds cleanly, so a
+#       break in that stage shows up here instead of on someone's laptop the
+#       next time they run "docker compose -f docker-compose.dev.yml up".
+# HOW:  Triggers on push to "dev", or manually via workflow_dispatch.
+#
+# No push-to-registry or deploy step exists here on purpose: no dev hosting
+# account has been set up yet, so there's nowhere to push or deploy to. See
+# the TODO at the bottom of this file for what to add once one exists.
+# =============================================================================
+
+name: Deploy Dev
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch: {}
+
+jobs:
+  build-dev-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # "docker build" runs every layer (npm install for root/server/client)
+      # but never executes the image's CMD, so this doesn't need a database
+      # to validate that the stage itself builds correctly.
+      - name: Build development image
+        run: docker build --target development -t dad-jokes-api:dev-${{ github.sha }} .
+
+      # TODO: once dev hosting exists, add a step here to log in to that
+      # registry and push "dad-jokes-api:dev-${{ github.sha }}". Nothing
+      # pushes anywhere today, this job only proves the image builds.

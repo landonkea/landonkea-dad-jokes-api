@@ -1,0 +1,103 @@
+# =============================================================================
+# Deploy Staging — Builds, tags, and smoke-tests the staging-candidate image
+# =============================================================================
+# WHAT: Builds the Dockerfile's "production" stage (the same one prod uses),
+#       tags it as a staging candidate, then boots it against a real
+#       Postgres service container and hits /api/health and /api/jokes to
+#       confirm the image that would get promoted to staging actually works.
+# WHY:  Staging is supposed to be the closest thing to production before
+#       anything reaches it, so this builds the exact same Dockerfile target
+#       ("production") as deploy-prod.yml rather than a separate "staging
+#       build." The only difference between this job and deploy-prod.yml is
+#       the image tag and the database name used for the smoke test.
+# HOW:  Triggers on push to "staging" (no such branch exists yet, this
+#       workflow just won't run until one is created), or manually via
+#       workflow_dispatch.
+#
+# No push-to-registry or deploy step exists here on purpose: no staging host
+# has been set up yet. See the TODO at the bottom of this file.
+# =============================================================================
+
+name: Deploy Staging
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch: {}
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dad_jokes_staging
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build production image
+        run: docker build --target production -t dad-jokes-api:staging-${{ github.sha }} .
+
+      # "--network host" lets the container reach the service on
+      # "localhost:5432", GitHub Actions maps service container ports onto
+      # the runner's own localhost.
+      - name: Start container against the service Postgres
+        run: |
+          docker run -d --name dad-jokes-staging-check --network host \
+            -e DB_HOST=localhost \
+            -e DB_PORT=5432 \
+            -e DB_USER=postgres \
+            -e DB_PASSWORD=postgres \
+            -e DB_NAME=dad_jokes_staging \
+            -e PORT=3001 \
+            -e ADMIN_TOKEN=staging-ci-check \
+            dad-jokes-api:staging-${{ github.sha }}
+
+      - name: Smoke test the staging-candidate image
+        run: |
+          echo "Waiting for the container to become healthy..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3001/api/health > /dev/null; then
+              echo "Container is up after ${i} attempt(s)."
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "Container never became healthy."
+              docker logs dad-jokes-staging-check
+              exit 1
+            fi
+            sleep 2
+          done
+
+          echo "GET /api/health:"
+          curl -sf http://localhost:3001/api/health | tee /dev/stderr | grep -q '"status":"alive"'
+
+          echo "GET /api/jokes:"
+          curl -sf http://localhost:3001/api/jokes | tee /dev/stderr | grep -q '"success":true'
+
+      - name: Container logs
+        if: always()
+        run: docker logs dad-jokes-staging-check || true
+
+      - name: Stop container
+        if: always()
+        run: docker rm -f dad-jokes-staging-check || true
+
+      # TODO: once staging hosting exists, add steps here to push
+      # "dad-jokes-api:staging-${{ github.sha }}" to that registry and
+      # trigger an actual deploy (an API call or CLI specific to whatever
+      # host gets chosen). Nothing deploys anywhere today, this job only
+      # proves the image that would be promoted actually boots and serves
+      # requests.
