@@ -43,9 +43,28 @@ export const SCHEMA_SQL = `
   CREATE INDEX IF NOT EXISTS idx_jokes_category ON jokes(category);
   CREATE INDEX IF NOT EXISTS idx_jokes_groan_level ON jokes(groan_level);
   CREATE INDEX IF NOT EXISTS idx_votes_joke_id ON votes(joke_id);
-  CREATE INDEX IF NOT EXISTS idx_votes_joke_ip ON votes(joke_id, voter_ip);
   CREATE INDEX IF NOT EXISTS idx_jokes_score ON jokes ((upvotes - downvotes));
   CREATE INDEX IF NOT EXISTS idx_jokes_status ON jokes(status);
+
+  -- "One vote per IP per joke" used to be enforced only by routes/jokes.ts
+  -- POST /vote doing a SELECT to check for an existing vote before its own
+  -- INSERT, two requests arriving close enough together could both pass
+  -- that check before either had inserted, double-counting a vote (and
+  -- doing so with no error, since nothing at the database level actually
+  -- stopped it). This DELETE removes any duplicate (joke_id, voter_ip)
+  -- rows that race already produced, keeping the earliest of each pair, so
+  -- the UNIQUE INDEX below doesn't fail against a database that hit it
+  -- before this migration existed.
+  DELETE FROM votes a USING votes b
+    WHERE a.id > b.id AND a.joke_id = b.joke_id AND a.voter_ip = b.voter_ip;
+
+  -- Enforces "one vote per IP per joke" atomically in the database itself
+  -- (see routes/jokes.ts POST /vote's INSERT ... ON CONFLICT DO NOTHING),
+  -- closing the race the DELETE above cleans up after. Replaces the old
+  -- idx_votes_joke_ip index, a unique index already serves every lookup
+  -- that one did.
+  CREATE UNIQUE INDEX IF NOT EXISTS uq_votes_joke_voter ON votes(joke_id, voter_ip);
+  DROP INDEX IF EXISTS idx_votes_joke_ip;
 
   -- Trigram GIN indexes for the ?q= search on GET /api/jokes (see routes/jokes.ts).
   -- Separate per-column indexes (rather than one index on the concatenated
